@@ -126,7 +126,7 @@ class LgApSimulation:
             time.sleep(1)
         print("Bridge connected")
 
-    def addNpcVehicle(self, posVector, vehicleType="SUV"):
+    def addNpcVehicle(self):
         sim = self.sim
         world = self.world
         npcList = self.npcList
@@ -255,8 +255,8 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
-        self.addNpcVehicle(lgsvl.Vector(1610.6, 88.38, -620.9))
-        self.addNpcVehicle(lgsvl.Vector(1640.6, 88.38, -608.9))
+        self.addNpcVehicle()
+        self.addNpcVehicle()
         ################################################################
 
         # for npc in npcList:
@@ -300,9 +300,7 @@ class LgApSimulation:
         
         for t in range(0, int(numOfTimeSlice)):
             # For every npc
-            scenario_pos[0][t].append(ego.state.transform.position.x)
-            scenario_pos[0][t].append(ego.state.transform.position.y)
-            scenario_pos[0][t].append(ego.state.transform.position.z)
+            scenario_pos[0][t].append(ego.get_location())
             i = 1
             for npc in npcList:	
                 self.setNpcSpeed(npc, scenarioObj[i][t][0])
@@ -314,9 +312,7 @@ class LgApSimulation:
                 elif turnCommand == 2:
                     direction = True
                     self.tm.force_lane_change(npc, direction)
-                scenario_pos[i][t].append(npc.state.transform.position.x)
-                scenario_pos[i][t].append(npc.state.transform.position.y)
-                scenario_pos[i][t].append(npc.state.transform.position.z)
+                scenario_pos[i][t].append(npc.get_location())
                 i += 1
 
             # Stop if there is accident
