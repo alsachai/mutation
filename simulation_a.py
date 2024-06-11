@@ -126,7 +126,7 @@ class LgApSimulation:
             time.sleep(1)
         print("Bridge connected")
 
-    def addNpcVehicle(self):
+    def addNpcVehicle(self, scenario_npc, first_flag):
         sim = self.sim
         world = self.world
         npcList = self.npcList
@@ -134,12 +134,22 @@ class LgApSimulation:
         vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
         # random
         spawn_points = world.get_map().get_spawn_points()
-        npc = world.spawn_actor(vehicle_bp, random.choice(spawn_points))
+        if first_flag == True:
+            npc = world.spawn_actor(vehicle_bp, random.choice(spawn_points))
+        else:
+            npc = world.spawn_actor(vehicle_bp, carla.Transform(scenario_npc[0][2]))
         npc.set_autopilot(True)
-        destination = random.choice(spawn_points)
-        if destination.location == npc.get_location():
+        if first_flag == True:
             destination = random.choice(spawn_points)
-        self.tm.set_path(npc, [destination.location])
+            if destination.location == npc.get_location():
+                destination = random.choice(spawn_points)
+            self.tm.set_path(npc, [destination.location])
+        else:
+            route = []
+            for t in range(1, len(scenario_npc)):
+                route.append(scenario_npc[t][2])
+            self.tm.set_path(npc, route)
+            
         
         # # manual
         # Location = carla.Location(posVector.x, posVector.y, posVector.z)
@@ -235,6 +245,12 @@ class LgApSimulation:
 
        return fitness * -1
 
+
+    def create_path(self, vehicle, scenario):
+        route = []
+
+
+
     def runSimulation(self, scenarioObj):
 
         now = datetime.now()
@@ -248,6 +264,8 @@ class LgApSimulation:
         init_degree = ego.state.rotation.y
         numOfTimeSlice = len(scenarioObj[0])
         numOfNpc = len(scenarioObj)
+        if len(scenarioObj[i][t][0]) == 2:
+            first_flag = True
         # deltaDList = [[self.maxint for i in range(numOfTimeSlice)] for j in range(numOfNpc)] # 1-D: NPC; 2-D: Time Slice
         # dList = [[self.maxint for i in range(numOfTimeSlice)] for j in range(numOfNpc)] # 1-D: NPC; 2-D: Time Slice
         # spawns = sim.get_spawn()
@@ -255,8 +273,8 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
-        self.addNpcVehicle()
-        self.addNpcVehicle()
+        self.addNpcVehicle(scenarioObj, first_flag)
+        self.addNpcVehicle(scenarioObj, first_flag)
         ################################################################
 
         # for npc in npcList:
