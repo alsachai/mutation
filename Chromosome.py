@@ -13,6 +13,8 @@ class Chromosome:
     def __init__(self, bounds, NPC_size, time_size, conflict_t, conflict_d, period):
         self.y = 0
         self.scenario = [[[] for i in range(time_size)] for j in range(NPC_size)] # start with npc, scenario_pos starts with ego
+        self.scenario_pos = None
+        self.period_conflicts = None
         self.bounds = bounds
         self.code_x1_length = NPC_size 
         self.code_x2_length = time_size
@@ -78,9 +80,17 @@ class Chromosome:
 
     # Get fitness score of the scenario
     def func(self, gen=None, lisFlag=False):
-
         resultObj = self.decoding()
-        self.scenario_pos = resultObj['pos']
+        get_pos = resultObj['pos']
+        for i in range(self.code_x1_length):        # For every NPC
+            for j in range(self.code_x2_length):    # For every time slice
+                self.scenario[i][j].append(scenario_pos[i][j])
+        self.scenario_pos = [[[] for i in range(time_size)] for j in range(NPC_size)]
+        for i in range(self.code_x1_length):        # For every NPC
+            for j in range(self.code_x2_length):    # For every time slice
+                self.scenario_pos[i][j].append(get_pos[i][j].x)
+                self.scenario_pos[i][j].append(get_pos[i][j].y)
+                self.scenario_pos[i][j].append(get_pos[i][j].z)
         self.period_conflicts = self.findConflicts()
         self.y = sum(conflict['score'] for conflict in self.period_conflicts if conflict is not None)
         if resultObj['fault'] == 'ego':
