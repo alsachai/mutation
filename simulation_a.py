@@ -207,8 +207,8 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
-        self.addNpcVehicle(scenarioObj, first_flag)
-        self.addNpcVehicle(scenarioObj, first_flag)
+        for n in range(numOfNpc):
+            self.addNpcVehicle(scenarioObj, first_flag)
         ################################################################
 
         # for npc in npcList:
@@ -248,7 +248,7 @@ class LgApSimulation:
         actionChangeFreq = 20
         hitTime = numOfNpc
         
-        scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc)] 
+        scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
         
         for t in range(0, int(numOfTimeSlice)):
             # For every npc
