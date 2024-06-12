@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
 import os
-import lgsvl
 import sys
 import time
 import math
 import random
 import pickle
 from sympy import Point3D, Line3D, Segment3D, Point2D, Line2D, Segment2D
-import liability
 from datetime import datetime
 import util
 import copy
@@ -187,32 +185,6 @@ class LgApSimulation:
         if dBrake < 0:
             dBrake = 0
         return dBrake
-    
-    def findCollisionDeltaD(self, ego, npc):
-        d = liability.findDistance(ego, npc) - 4.6 # 4.6 is the length of a car
-        return d - self.brakeDist(ego.state.speed)
-
-    def findDeltaD(self, ego, npc):
-        d = liability.findDistance(ego, npc) - 4.6 # 4.6 is the length of a car
-        deltaD = self.maxint # The smaller delta D, the better
-        deltaDFront = self.maxint
-        deltaDSide = self.maxint
-
-        # When npc is in front
-        if npc.state.transform.position.x + 4.6 < ego.state.transform.position.x and npc.state.transform.position.x + 20 > ego.state.transform.position.x:  # The ego is within a range of 4.6 to 20 units in front of the NPC.  may have mistake
-            if npc.state.transform.position.z > ego.state.transform.position.z - 2 and npc.state.transform.position.z < ego.state.transform.position.z + 2:   # The NPC is within a range of 2 units to the left or right of the ego.
-                deltaDFront = d - self.brakeDist(ego.state.speed)
-                util.print_debug(" --- Delta D Front: " + str(deltaDFront))
-
-        # When ego is changing line to npc's front
-        if npc.state.transform.position.x - 4.6 > ego.state.transform.position.x and npc.state.transform.position.x - 20 < ego.state.transform.position.x:  # The NPC is within a range of 4.6 to 20 units in front of the egp. may have mistake
-            if npc.state.transform.position.z + 2 > ego.state.transform.position.z and npc.state.transform.position.z - 2 < ego.state.transform.position.z and (ego.state.rotation.y < 269 or ego.state.rotation.y > 271):
-                deltaDSide = d - self.brakeDist(npc.state.speed)
-                util.print_debug(" --- Delta D Side: " + str(deltaDSide))
-   
-        deltaD = min(deltaDSide, deltaDFront)
-
-        return deltaD
 
     def findFitness(self, deltaDlist, dList, isEgoFault, isHit, hitTime):
        # The higher the fitness, the better.
@@ -333,13 +305,13 @@ class LgApSimulation:
                 scenario_pos[i][t].append(npc.get_location())
                 i += 1
 
-            # Stop if there is accident
-            if self.isEgoFault == True or liability.isHitEdge(ego, sim, init_degree):
-               self.isHit = True
-               self.isEgoFault = True
-            if self.isHit == True:
-               hitTime = t
-               break
+            # # Stop if there is accident
+            # if self.isEgoFault == True or liability.isHitEdge(ego, sim, init_degree):
+            #    self.isHit = True
+            #    self.isEgoFault = True
+            # if self.isHit == True:
+            #    hitTime = t
+            #    break
 
             for j in range(0, actionChangeFreq):
 
