@@ -17,23 +17,19 @@ class LgApSimulation:
 
     def __init__(self):
         ################################################################
-        self.bridgeLogPath = "/home/av-input/Workplace/apollo-lg/apollo-3.5/data/log/cyber_bridge.INFO"
+        # self.bridgeLogPath = "/home/av-input/Workplace/apollo-lg/apollo-3.5/data/log/cyber_bridge.INFO"
         ################################################################
         self.sim = None 
         self.world = None
         self.tm = None
         self.ego = None # There is only one ego
         self.isHit = False
-        self.initEvPos = lgsvl.Vector(1699, 88.38, -607.9)  # Initial position of ego vehicle
         self.npcList = [] # The list contains all the npc added
         self.initSimulator()
-        self.loadMap()
         self.initEV()
         self.isEgoFault = False
         self.isHit = False
-        self.connectEvToApollo()
-        self.maxint = 130 
-        self.egoFaultDeltaD = 0
+        # self.egoFaultDeltaD = 0
 
     def initSimulator(self):
         client = carla.Client('localhost', 2000)
@@ -159,13 +155,6 @@ class LgApSimulation:
         # npc = sim.add_agent(vehicleType, lgsvl.AgentType.NPC, npcState)
         npcList.append(npc)
 
-    def addFixedMovingNpc(self, posVector, vehicleType="SUV"):
-        sim = self.sim
-        npcState = lgsvl.AgentState()
-        npcState.transform = sim.map_point_on_lane(posVector)
-        npc = sim.add_agent(vehicleType, lgsvl.AgentType.NPC, npcState)
-        npc.follow_closest_lane(True, 13.4)
-
     # This function send an instance action command to the NPC at the current time instance
     def setNpcSpeed(self, npc, speed):
         self.tm.set_desired_speed(npc, speed)
@@ -186,41 +175,6 @@ class LgApSimulation:
             dBrake = 0
         return dBrake
 
-    def findFitness(self, deltaDlist, dList, isEgoFault, isHit, hitTime):
-       # The higher the fitness, the better.
-
-       minDeltaD = self.maxint
-       for npc in deltaDlist: # ith NPC
-            hitCounter = 0
-            for deltaD in npc:
-                if isHit == True and hitCounter == hitTime:
-                   break
-                if deltaD < minDeltaD:
-                    minDeltaD = deltaD # Find the min deltaD over time slices for each NPC as the fitness
-                hitCounter += 1
-       util.print_debug(deltaDlist)
-       util.print_debug(" *** minDeltaD is " + str(minDeltaD) + " *** ")
-
-       minD = self.maxint
-       for npc in dList: # ith NPC
-            hitCounter = 0
-            for d in npc:
-                if isHit == True and hitCounter == hitTime:
-                   break
-                if d < minD:
-                    minD = d
-                hitCounter += 1
-       util.print_debug(dList)
-       util.print_debug(" *** minD is " + str(minD) + " *** ")
-
-       fitness = 0.5 * minD + 0.5 * minDeltaD
-
-       return fitness * -1
-
-
-    def create_path(self, vehicle, scenario):
-        route = []
-
 
 
     def runSimulation(self, scenarioObj):
@@ -238,9 +192,6 @@ class LgApSimulation:
         numOfNpc = len(scenarioObj)
         if len(scenarioObj[i][t][0]) == 2:
             first_flag = True
-        # deltaDList = [[self.maxint for i in range(numOfTimeSlice)] for j in range(numOfNpc)] # 1-D: NPC; 2-D: Time Slice
-        # dList = [[self.maxint for i in range(numOfTimeSlice)] for j in range(numOfNpc)] # 1-D: NPC; 2-D: Time Slice
-        # spawns = sim.get_spawn()
 
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
