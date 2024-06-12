@@ -73,6 +73,7 @@ class LgApSimulation:
                     if sensor.parent and sensor.parent.id == vehicle.id:
                         sensor.destroy()
                 vehicle.destroy()
+                print("vehicle destoried")
         
         blueprint_library = world.get_blueprint_library()
         vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
@@ -256,9 +257,10 @@ class LgApSimulation:
             scenario_pos[0][t].append(ego.get_location().y)
             scenario_pos[0][t].append(ego.get_location().z)
             i = 1
+
             for npc in npcList:	
-                self.setNpcSpeed(npc, scenarioObj[i][t][0])
-                turnCommand = scenarioObj[i][t][1]
+                self.setNpcSpeed(npc, scenarioObj[i-1][t][0])
+                turnCommand = scenarioObj[i-1][t][1]
                 #<0: no turn; 1: left; 2: right>
                 if turnCommand == 1:
                     direction = False
