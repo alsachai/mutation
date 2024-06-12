@@ -84,15 +84,15 @@ class Chromosome:
         get_pos = resultObj['pos']
         for i in range(self.code_x1_length):        # For every NPC
             for j in range(self.code_x2_length):    # For every time slice
-                self.scenario[i][j].append(get_pos[i][j].x)
-                self.scenario[i][j].append(get_pos[i][j].y)
-                self.scenario[i][j].append(get_pos[i][j].z)
+                self.scenario[i][j].append(get_pos[i][j][0])
+                self.scenario[i][j].append(get_pos[i][j][1])
+                self.scenario[i][j].append(get_pos[i][j][2])
         self.scenario_pos = [[[] for i in range(time_size)] for j in range(NPC_size)]
         for i in range(self.code_x1_length):        # For every NPC
             for j in range(self.code_x2_length):    # For every time slice
-                self.scenario_pos[i][j].append(get_pos[i][j].x)
-                self.scenario_pos[i][j].append(get_pos[i][j].y)
-                self.scenario_pos[i][j].append(get_pos[i][j].z)
+                self.scenario_pos[i][j].append(get_pos[i][j][0])
+                self.scenario_pos[i][j].append(get_pos[i][j][1])
+                self.scenario_pos[i][j].append(get_pos[i][j][2])
         self.period_conflicts = self.findConflicts()
         self.y = sum(conflict['score'] for conflict in self.period_conflicts if conflict is not None)
         if resultObj['fault'] == 'ego':
