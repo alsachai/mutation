@@ -87,7 +87,7 @@ class Chromosome:
                 self.scenario[i][j].append(get_pos[i+1][j][0])
                 self.scenario[i][j].append(get_pos[i+1][j][1])
                 self.scenario[i][j].append(get_pos[i+1][j][2])
-        self.scenario_pos = [[[] for i in range(time_size)] for j in range(NPC_size)]
+        self.scenario_pos = [[[] for i in range(self.code_x2_length)] for j in range(self.code_x1_length)]
         for i in range(self.code_x1_length + 1):        # For every NPC
             for j in range(self.code_x2_length):    # For every time slice
                 self.scenario_pos[i][j].append(get_pos[i][j][0])
