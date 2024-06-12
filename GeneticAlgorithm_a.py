@@ -318,7 +318,7 @@ class GeneticAlgorithm:
         for i in range(0, self.pop_size):
             if self.pop[i].y == maxFitness:
                 for j in range(int(self.pop_size / 2.0)):
-                    selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size)
+                    selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                     selectedChromosome.scenario = self.pop[i].scenario
                     selectedChromosome.y = self.pop[i].y
                     v.append(selectedChromosome)
@@ -332,7 +332,7 @@ class GeneticAlgorithm:
         for i in range(0, self.pop_size):
             if self.pop[i].y == max2Fitness:
                 for j in range(int(self.pop_size / 2.0)):
-                    selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size)
+                    selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                     selectedChromosome.scenario = self.pop[i].scenario
                     selectedChromosome.y = self.pop[i].y
                     v.append(selectedChromosome)
@@ -384,7 +384,7 @@ class GeneticAlgorithm:
         for i in range(0, self.pop_size):
             r = random.random()              # generate a random number between 0 and 1
             if r < q[0]:
-                selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size)
+                selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                 selectedChromosome.scenario = self.pop[0].scenario
                 selectedChromosome.scenario_pos = self.pop[0].scenario_pos
                 selectedChromosome.period_conflicts = self.pop[0].period_conflicts
@@ -392,7 +392,7 @@ class GeneticAlgorithm:
                 v.append(selectedChromosome)
             for j in range(1, self.pop_size):
                 if q[j - 1] < r <= q[j]:
-                    selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size)
+                    selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                     selectedChromosome.scenario = self.pop[j].scenario
                     selectedChromosome.scenario_pos = self.pop[j].scenario_pos
                     selectedChromosome.period_conflicts = self.pop[j].period_conflicts
