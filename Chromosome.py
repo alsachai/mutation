@@ -114,13 +114,13 @@ class Chromosome:
 
         
     def findConflicts(self):
-        num_periods = (self.time_size + self.period - 1) // self.period
+        num_periods = (self.code_x2_length + self.period - 1) // self.period
 
         period_conflicts = [None] * num_periods
 
         for period_idx in range(num_periods):
             start_time = period_idx * self.period
-            end_time = min(start_time + self.period, self.time_size)
+            end_time = min(start_time + self.period, self.code_x2_length)
         
             for t in range(start_time, end_time):
                 ego_pos = self.scenario_pos[0][t]
@@ -129,7 +129,7 @@ class Chromosome:
                 for dt in range(0, self.conflict_t + 1):
                     if t + dt < end_time: 
                         future_pos_index = t + dt - start_time
-                        future_positions = [self.scenario_pos[m][t + dt] for m in range(1, NPC_size + 1)]
+                        future_positions = [self.scenario_pos[m][t + dt] for m in range(1, self.code_x1_length + 1)]
                         distances = np.linalg.norm(np.array(future_positions) - np.array(ego_pos), axis=1)
                         min_distance_idx = np.argmin(distances)
 
@@ -146,7 +146,7 @@ class Chromosome:
                     # Check past positions
                     if t - dt >= start_time: 
                         past_pos_index = t - dt - start_time
-                        past_positions = [self.scenario_pos[m][t - dt] for m in range(1, NPC_size + 1)]
+                        past_positions = [self.scenario_pos[m][t - dt] for m in range(1, self.code_x1_length + 1)]
                         distances = np.linalg.norm(np.array(past_positions) - np.array(ego_pos), axis=1)
                         min_distance_idx = np.argmin(distances)
 
