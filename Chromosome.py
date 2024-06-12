@@ -70,7 +70,7 @@ class Chromosome:
                 resultObj = pickle.load(f_f)
                 f_f.close()
 
-            if resultObj != None and resultObj['fitness'] != '':
+            if resultObj != None:
                 return resultObj
                 break
             else:
