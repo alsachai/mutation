@@ -190,7 +190,7 @@ class LgApSimulation:
         # init_degree = ego.state.rotation.y
         numOfTimeSlice = len(scenarioObj[0])
         numOfNpc = len(scenarioObj)
-        if len(scenarioObj[0][0][0]) == 2:
+        if len(scenarioObj[0][0]) == 2:
             first_flag = True
 
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
