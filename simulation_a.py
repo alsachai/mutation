@@ -241,7 +241,9 @@ class LgApSimulation:
         
         for t in range(0, int(numOfTimeSlice)):
             # For every npc
-            scenario_pos[0][t].append(ego.get_location())
+            scenario_pos[0][t].append(ego.get_location().x)
+            scenario_pos[0][t].append(ego.get_location().y)
+            scenario_pos[0][t].append(ego.get_location().z)
             i = 1
             for npc in npcList:	
                 self.setNpcSpeed(npc, scenarioObj[i][t][0])
@@ -253,7 +255,9 @@ class LgApSimulation:
                 elif turnCommand == 2:
                     direction = True
                     self.tm.force_lane_change(npc, direction)
-                scenario_pos[i][t].append(npc.get_location())
+                scenario_pos[i][t].append(npc.get_location().x)
+                scenario_pos[i][t].append(npc.get_location().y)
+                scenario_pos[i][t].append(npc.get_location().z)
                 i += 1
 
             # # Stop if there is accident
