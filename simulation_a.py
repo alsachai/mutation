@@ -187,7 +187,7 @@ class LgApSimulation:
         tm = self.tm
         npcList = self.npcList
         ego = self.ego
-        init_degree = ego.state.rotation.y
+        # init_degree = ego.state.rotation.y
         numOfTimeSlice = len(scenarioObj[0])
         numOfNpc = len(scenarioObj)
         if len(scenarioObj[i][t][0]) == 2:
@@ -311,13 +311,16 @@ scenarioObj = pickle.load(objF)
 objF.close()
 
 resultDic = {}
-try:
-    sim = LgApSimulation()
-    resultDic = sim.runSimulation(scenarioObj)
-except Exception as e:
-    util.print_debug(e.message)
-    resultDic['fitness'] = ''
-    resultDic['fault'] = ''
+# try:
+#     sim = LgApSimulation()
+#     resultDic = sim.runSimulation(scenarioObj)
+# except Exception as e:
+#     util.print_debug(e.message)
+#     resultDic['fitness'] = ''
+#     resultDic['fault'] = ''
+
+sim = LgApSimulation()
+resultDic = sim.runSimulation(scenarioObj)
 
 # Send fitness score int object back to ge
 if os.path.isfile(resPath) == True:
