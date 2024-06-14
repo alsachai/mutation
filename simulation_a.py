@@ -207,7 +207,6 @@ class LgApSimulation:
         # init_degree = ego.state.rotation.y
         numOfTimeSlice = len(scenarioObj[0])
         numOfNpc = len(scenarioObj)
-        print('len:',len(scenarioObj[0][0]))
         if len(scenarioObj[0][0]) == 2:
             first_flag = True
         else:

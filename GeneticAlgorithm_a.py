@@ -84,8 +84,9 @@ class GeneticAlgorithm:
 
             # Make sure we clear touched_chs history book every gen
             self.touched_chs = []
+            self.mutation()                                   # Mutation
             self.cross()                                       # Crossover
-            self.mutation(i)                                   # Mutation
+            self.simulate_touched(i)
             self.select_roulette()                             # Selection scenarios for the next generation
 
             best, bestIndex = self.find_best()                     # Find the scenario with the best fitness score in current generation 
@@ -214,12 +215,13 @@ class GeneticAlgorithm:
                 pop_j.period_conflicts[swap_index] = copy.deepcopy(pop_i.period_conflicts[swap_index])
                 pop_i.period_conflicts[swap_index] = temp
                 
+
     def isStraight(self, ego_pos, npc_pos):      
         if npc_pos[0] + 4.6 < ego_pos[0] and npc_pos[0] + 20 > ego_pos[0]: 
             if npc_pos[2] > ego_pos[2] - 2 and npc_pos[2] < ego_pos[2] + 2: 
                 return True  
                 
-    def mutation(self, gen):
+    def mutation(self):
         i = 0
         while(i<len(self.pop)) :
             eachChs = self.pop[i]
@@ -295,15 +297,20 @@ class GeneticAlgorithm:
                 # Record which chromosomes have been touched
                 self.touched_chs.append(eachChs)
 
-            # Only run simulation for the chromosomes that are touched in this generation
+
+
+    def simulate_touched(self, gen):
+        i = 0
+        while(i < len(self.pop)):
+            eachChs = self.pop[i]
+            i += 1
             if eachChs in self.touched_chs:
                 eachChs.func(gen, self.isInLis)
             else:
                 util.print_debug(" --- The chromosome has not been touched in this generation, skip simulation. ---")
-
-
             util.print_debug(" --- In mutation: Current scenario has y = " + str(eachChs.y))
             # util.print_debug(eachChs.scenario)
+
 
     def select_top2(self):
 
