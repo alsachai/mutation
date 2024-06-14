@@ -124,6 +124,10 @@ class LgApSimulation:
         
         self.ego = ego
 
+        self.spectator = world.get_spectator()
+        self.spectator.set_transform(spawn_ego + carla.Location(x=0, y=0, z=80), carla.Rotation(pitch=270))
+
+
     def connectEvToApollo(self):
         ego = self.ego
         print("Connecting to bridge")
@@ -143,7 +147,7 @@ class LgApSimulation:
         if first_flag == True:
             npc = world.spawn_actor(vehicle_bp, random.choice(spawn_points))
         else:
-            npc = world.spawn_actor(vehicle_bp, carla.Transform(scenario_npc[0][2]))
+            npc = world.spawn_actor(vehicle_bp, carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][3])))
         npc.set_autopilot(True)
         if first_flag == True:
             destination = random.choice(spawn_points)
@@ -301,7 +305,8 @@ class LgApSimulation:
                 #     resultDic['fault'] = ''
                 #     util.print_debug(" ---- Bridge is cut off ----")
                 #     return resultDic
-
+                ego_position = self.ego.get_location()
+                self.spectator.set_transform(ego_position + carla.Location(x=0, y=0, z=80), carla.Rotation(pitch=270))
                 world.tick()
                 if self.isHit == True:
                     break
