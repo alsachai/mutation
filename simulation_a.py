@@ -202,8 +202,11 @@ class LgApSimulation:
         # init_degree = ego.state.rotation.y
         numOfTimeSlice = len(scenarioObj[0])
         numOfNpc = len(scenarioObj)
+        print('len:',len(scenarioObj[0][0]))
         if len(scenarioObj[0][0]) == 2:
             first_flag = True
+        else:
+            first_flag = False
 
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
@@ -313,7 +316,6 @@ class LgApSimulation:
         if self.isEgoFault == True:
                 resultDic['fault'] = 'ego'
         util.print_debug(" === Finish simulation === ")
-        util.print_debug(resultDic)
 
         return resultDic
 
