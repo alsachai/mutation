@@ -125,7 +125,7 @@ class LgApSimulation:
         self.ego = ego
 
         self.spectator = world.get_spectator()
-        self.spectator.set_transform(spawn_ego.location + carla.Location(x=0, y=0, z=80), carla.Rotation(pitch=270))
+        self.spectator.set_transform(carla.Transform(spawn_ego.location + carla.Location(x=0, y=0, z=80), carla.Rotation(pitch=270)))
 
 
     def connectEvToApollo(self):
@@ -306,7 +306,7 @@ class LgApSimulation:
                 #     util.print_debug(" ---- Bridge is cut off ----")
                 #     return resultDic
                 ego_position = self.ego.get_location()
-                self.spectator.set_transform(ego_position + carla.Location(x=0, y=0, z=80), carla.Rotation(pitch=270))
+                self.spectator.set_transform(carla.Transform(ego_position + carla.Location(x=0, y=0, z=80), carla.Rotation(pitch=270)))
                 world.tick()
                 if self.isHit == True:
                     break
