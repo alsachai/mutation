@@ -18,8 +18,8 @@ class Chromosome:
         self.bounds = bounds
         self.code_x1_length = NPC_size 
         self.code_x2_length = time_size
-        self.conflit_t = conflict_t
-        self.conflit_d = conflict_d
+        self.conflict_t = conflict_t
+        self.conflict_d = conflict_d
         self.period = period
         self.timeoutTime = 300 # in seconds, timeout timer for simulator execution per each scenario simulation
 
