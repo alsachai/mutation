@@ -210,10 +210,6 @@ class GeneticAlgorithm:
                 pop_j.scenario_pos[swap_index] = copy.deepcopy(pop_i.scenario_pos[swap_index])
                 pop_i.scenario_pos[swap_index] = temp
 
-
-                temp = copy.deepcopy(pop_j.period_conflicts[swap_index])
-                pop_j.period_conflicts[swap_index] = copy.deepcopy(pop_i.period_conflicts[swap_index])
-                pop_i.period_conflicts[swap_index] = temp
                 
 
     def isStraight(self, ego_pos, npc_pos):      
