@@ -163,6 +163,9 @@ class Chromosome:
 
             if conflict_found:
                 break
+        if len(period_conflicts) == 0: 
+            print("No conflict!!")
+
         return period_conflicts
 
 

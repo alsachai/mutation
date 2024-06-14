@@ -224,6 +224,8 @@ class GeneticAlgorithm:
         while(i<len(self.pop)) :
             eachChs = self.pop[i]
             i += 1
+            if len(eachChs.period_conflicts) == 0:
+                continue
             if self.pm >= random.random():
 
                 beforeMutation = copy.deepcopy(eachChs)
