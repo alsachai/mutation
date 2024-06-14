@@ -116,7 +116,7 @@ class Chromosome:
     def findConflicts(self):
         num_periods = (self.code_x2_length + self.period - 1) // self.period
 
-        period_conflicts = [None] * num_periods
+        period_conflicts = []
 
         for period_idx in range(num_periods):
             start_time = period_idx * self.period
@@ -134,13 +134,13 @@ class Chromosome:
                         min_distance_idx = np.argmin(distances)
 
                         if distances[min_distance_idx] < self.conflict_d:
-                            period_conflicts[period_idx] = {
+                            period_conflicts.append({
                                 "ego_time": t,
                                 "npc_time": t + dt,
                                 "npc": min_distance_idx + 1, 
                                 "distance": distances[min_distance_idx],
                                 "score": dt
-                            }
+                            })
                             conflict_found = True
                             break
                     # Check past positions
@@ -151,13 +151,13 @@ class Chromosome:
                         min_distance_idx = np.argmin(distances)
 
                         if distances[min_distance_idx] < self.conflict_d:
-                            period_conflicts[period_idx] = {
+                            period_conflicts.appned({
                                 "ego_time": t,
                                 "npc_time": t - dt,
                                 "npc": min_distance_idx + 1,
                                 "distance": distances[min_distance_idx],
                                 "score": dt
-                            }
+                            })
                             conflict_found = True
                             break
 
