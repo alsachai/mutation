@@ -147,7 +147,8 @@ class LgApSimulation:
         if first_flag == True:
             npc = world.spawn_actor(vehicle_bp, random.choice(spawn_points))
         else:
-            npc = world.spawn_actor(vehicle_bp, carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][3])))
+            print(scenario_npc[0][2], scenario_npc)
+            npc = world.spawn_actor(vehicle_bp, carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4])))
         npc.set_autopilot(True)
         if first_flag == True:
             destination = random.choice(spawn_points)
@@ -216,7 +217,7 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
         for n in range(numOfNpc):
-            self.addNpcVehicle(scenarioObj, first_flag)
+            self.addNpcVehicle(scenarioObj[n], first_flag)
         ################################################################
 
         # for npc in npcList:
