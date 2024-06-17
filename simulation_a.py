@@ -27,7 +27,7 @@ class LgApSimulation:
         self.npcList = [] # The list contains all the npc added
         self.numOfTimeSlice = numOfTimeSlice
         self.numOfNpc = numOfNpc
-        self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
+        self.scenario_pos = [[[] for i in range(int(numOfTimeSlice))] for j in range(int(numOfNpc) + 1)] 
         self.initSimulator()
         self.initEV()
         self.isEgoFault = False
@@ -341,8 +341,8 @@ class LgApSimulation:
 # Read scenario obj 
 objPath = sys.argv[1]
 resPath = sys.argv[2]
-numOfNpc = sys.argv[3]
-numOfTimeSlice = sys.argv[4]
+numOfNpc = int(sys.argv[3])
+numOfTimeSlice = int(sys.argv[4])
 
 
 
