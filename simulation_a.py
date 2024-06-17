@@ -25,11 +25,11 @@ class LgApSimulation:
         self.ego = None # There is only one ego
         self.isHit = False
         self.npcList = [] # The list contains all the npc added
-        self.initSimulator()
-        self.initEV()
         self.numOfTimeSlice = numOfTimeSlice
         self.numOfNpc = numOfNpc
         self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
+        self.initSimulator()
+        self.initEV()
         self.isEgoFault = False
         self.isHit = False
         # self.egoFaultDeltaD = 0
