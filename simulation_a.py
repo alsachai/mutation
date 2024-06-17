@@ -218,6 +218,7 @@ class LgApSimulation:
         for n in range(numOfNpc):
             self.addNpcVehicle(scenarioObj[n], first_flag)
         ################################################################
+        world.wait_for_tick()
 
         # for npc in npcList:
         #     npc.follow_closest_lane(True, random.randint(1,9))
