@@ -61,7 +61,7 @@ class Chromosome:
             if os.path.isfile('result.obj') == True:
                 os.remove("result.obj")
 
-            os.system("python3 simulation_a.py scenario.obj result.obj")
+            os.system("python3 simulation_a.py scenario.obj result.obj {} {}".format(self.code_x1_length, self.code_x2_length))
             resultObj = None
 
             # Read fitness score

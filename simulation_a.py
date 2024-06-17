@@ -15,7 +15,7 @@ import carla
      
 class LgApSimulation:
 
-    def __init__(self):
+    def __init__(self, numOfTimeSlice, numOfNpc):
         ################################################################
         # self.bridgeLogPath = "/home/av-input/Workplace/apollo-lg/apollo-3.5/data/log/cyber_bridge.INFO"
         ################################################################
@@ -27,6 +27,9 @@ class LgApSimulation:
         self.npcList = [] # The list contains all the npc added
         self.initSimulator()
         self.initEV()
+        self.numOfTimeSlice = numOfTimeSlice
+        self.numOfNpc = numOfNpc
+        self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
         self.isEgoFault = False
         self.isHit = False
         # self.egoFaultDeltaD = 0
@@ -81,6 +84,9 @@ class LgApSimulation:
         spawn_points = world.get_map().get_spawn_points()
         spawn_ego = random.choice(spawn_points)
         ego = world.spawn_actor(vehicle_bp, spawn_ego)
+        self.scenario_pos[0][0].append(spawn_ego.location.x)
+        self.scenario_pos[0][0].append(spawn_ego.location.y)
+        self.scenario_pos[0][0].append(spawn_ego.location.z)
         
         ego.set_autopilot(True)
         
@@ -136,7 +142,7 @@ class LgApSimulation:
             time.sleep(1)
         print("Bridge connected")
 
-    def addNpcVehicle(self, scenario_npc, first_flag):
+    def addNpcVehicle(self, scenario_npc, first_flag, num):
         sim = self.sim
         world = self.world
         npcList = self.npcList
@@ -145,11 +151,17 @@ class LgApSimulation:
         # random
         spawn_points = world.get_map().get_spawn_points()
         if first_flag == True:
-            npc = world.spawn_actor(vehicle_bp, random.choice(spawn_points))
+            npc_pos = random.choice(spawn_points)
+            npc = world.spawn_actor(vehicle_bp, npc_pos)
+            self.scenario_pos[num+1][0].append(npc_pos.location.x)
+            self.scenario_pos[num+1][0].append(npc_pos.location.y)
+            self.scenario_pos[num+1][0].append(npc_pos.location.z)
         else:
             print(scenario_npc[0][2], scenario_npc)
             npc = world.spawn_actor(vehicle_bp, carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4])))
+            
         npc.set_autopilot(True)
+
         if first_flag == True:
             destination = random.choice(spawn_points)
             if destination.location == npc.get_location():
@@ -205,8 +217,6 @@ class LgApSimulation:
         npcList = self.npcList
         ego = self.ego
         # init_degree = ego.state.rotation.y
-        numOfTimeSlice = len(scenarioObj[0])
-        numOfNpc = len(scenarioObj)
         if len(scenarioObj[0][0]) == 2:
             first_flag = True
         else:
@@ -215,10 +225,9 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
-        for n in range(numOfNpc):
-            self.addNpcVehicle(scenarioObj[n], first_flag)
+        for n in range(self.numOfNpc):
+            self.addNpcVehicle(scenarioObj[n], first_flag, n)
         ################################################################
-        world.wait_for_tick()
 
         # for npc in npcList:
         #     npc.follow_closest_lane(True, random.randint(1,9))
@@ -255,15 +264,16 @@ class LgApSimulation:
 
         # Frequency of action change of NPCs
         actionChangeFreq = 20
-        hitTime = numOfNpc
+        hitTime = self.numOfNpc
         
-        scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
         
-        for t in range(0, int(numOfTimeSlice)):
+        for t in range(0, int(self.numOfTimeSlice)):
             # For every npc
-            scenario_pos[0][t].append(ego.get_location().x)
-            scenario_pos[0][t].append(ego.get_location().y)
-            scenario_pos[0][t].append(ego.get_location().z)
+            
+            if t != 0:
+                self.scenario_pos[0][t].append(ego.get_location().x)
+                self.scenario_pos[0][t].append(ego.get_location().y)
+                self.scenario_pos[0][t].append(ego.get_location().z)
             i = 1
 
             for npc in npcList:	
@@ -276,9 +286,10 @@ class LgApSimulation:
                 elif turnCommand == 2:
                     direction = True
                     self.tm.force_lane_change(npc, direction)
-                scenario_pos[i][t].append(npc.get_location().x)
-                scenario_pos[i][t].append(npc.get_location().y)
-                scenario_pos[i][t].append(npc.get_location().z)
+                if t != 0:
+                    self.scenario_pos[i][t].append(npc.get_location().x)
+                    self.scenario_pos[i][t].append(npc.get_location().y)
+                    self.scenario_pos[i][t].append(npc.get_location().z)
                 i += 1
 
             # # Stop if there is accident
@@ -317,7 +328,7 @@ class LgApSimulation:
 
 
         resultDic = {}
-        resultDic['pos'] = scenario_pos
+        resultDic['pos'] = self.scenario_pos
         resultDic['fault'] = ''
         if self.isEgoFault == True:
                 resultDic['fault'] = 'ego'
@@ -330,6 +341,10 @@ class LgApSimulation:
 # Read scenario obj 
 objPath = sys.argv[1]
 resPath = sys.argv[2]
+numOfNpc = sys.argv[3]
+numOfTimeSlice = sys.argv[4]
+
+
 
 objF = open(objPath, 'rb')
 scenarioObj = pickle.load(objF)
@@ -344,7 +359,7 @@ resultDic = {}
 #     resultDic['fitness'] = ''
 #     resultDic['fault'] = ''
 
-sim = LgApSimulation()
+sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc)
 resultDic = sim.runSimulation(scenarioObj)
 
 # Send fitness score int object back to ge
