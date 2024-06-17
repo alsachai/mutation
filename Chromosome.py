@@ -22,6 +22,7 @@ class Chromosome:
         self.conflict_d = conflict_d
         self.period = period
         self.timeoutTime = 300 # in seconds, timeout timer for simulator execution per each scenario simulation
+        self.ego_path = None
 
     def fix_init(self):
         for i in range(self.code_x1_length):        # For every NPC
@@ -61,7 +62,7 @@ class Chromosome:
             if os.path.isfile('result.obj') == True:
                 os.remove("result.obj")
 
-            os.system("python3 simulation_a.py scenario.obj result.obj {} {}".format(self.code_x1_length, self.code_x2_length))
+            os.system("python3 simulation_a.py scenario.obj result.obj {} {} {}".format(self.code_x1_length, self.code_x2_length, self.ego_path))
             resultObj = None
 
             # Read fitness score
@@ -81,6 +82,7 @@ class Chromosome:
     # Get fitness score of the scenario
     def func(self, gen=None, lisFlag=False):
         resultObj = self.decoding()
+        self.ego_path = resultObj['ego_pos']
         get_pos = resultObj['pos']
         for i in range(self.code_x1_length):        # For every NPC
             for j in range(self.code_x2_length):    # For every time slice

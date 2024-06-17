@@ -15,7 +15,7 @@ import carla
      
 class LgApSimulation:
 
-    def __init__(self, numOfTimeSlice, numOfNpc):
+    def __init__(self, numOfTimeSlice, numOfNpc, ego_position=None):
         ################################################################
         # self.bridgeLogPath = "/home/av-input/Workplace/apollo-lg/apollo-3.5/data/log/cyber_bridge.INFO"
         ################################################################
@@ -28,8 +28,9 @@ class LgApSimulation:
         self.numOfTimeSlice = numOfTimeSlice
         self.numOfNpc = numOfNpc
         self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
+        self.resultDic = {}
         self.initSimulator()
-        self.initEV()
+        self.initEV(ego_position)
         self.isEgoFault = False
         self.isHit = False
         # self.egoFaultDeltaD = 0
@@ -63,7 +64,7 @@ class LgApSimulation:
         # else:
         #    sim.load(mapName)
 
-    def initEV(self):
+    def initEV(self, ego_position=None):
         sim = self.sim
         world = self.world
         world.tick()
@@ -81,14 +82,34 @@ class LgApSimulation:
         blueprint_library = world.get_blueprint_library()
         vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
         vehicle_bp.set_attribute('role_name', 'hero')
-        spawn_points = world.get_map().get_spawn_points()
-        spawn_ego = random.choice(spawn_points)
+
+        ego_path=[[] for i in range(2)]
+        
+        if ego_position is None:
+            spawn_points = world.get_map().get_spawn_points()
+            spawn_ego = random.choice(spawn_points)
+            destination_ego = random.choice(spawn_points)
+            if destination_ego == spawn_ego:
+                destination_ego = random.choice(spawn_points)
+        else:
+            spawn_ego = carla.Transform(carla.Location(x=ego_position[0][0], y=ego_position[0][1], z=ego_position[0][2]))
+            destination_ego = carla.Transform(carla.Location(x=ego_position[1][0], y=ego_position[1][1], z=ego_position[1][2]))
+
+        
         ego = world.spawn_actor(vehicle_bp, spawn_ego)
+        ego.set_autopilot(True)
+        self.tm.set_path(ego, [destination_ego.location])
+        
         self.scenario_pos[0][0].append(spawn_ego.location.x)
         self.scenario_pos[0][0].append(spawn_ego.location.y)
         self.scenario_pos[0][0].append(spawn_ego.location.z)
-        
-        ego.set_autopilot(True)
+        ego_path[0].append(spawn_ego.location.x)
+        ego_path[0].append(spawn_ego.location.y)
+        ego_path[0].append(spawn_ego.location.z)
+        ego_path[1].append(destination_ego.location.x)
+        ego_path[1].append(destination_ego.location.y)
+        ego_path[1].append(destination_ego.location.z)
+        self.resultDic['ego_pos'] = ego_path
         
         # egoState = lgsvl.AgentState()
         # egoState.transform = sim.map_point_on_lane(self.initEvPos)  # put the ego on the lane
@@ -157,7 +178,7 @@ class LgApSimulation:
             self.scenario_pos[num+1][0].append(npc_pos.location.y)
             self.scenario_pos[num+1][0].append(npc_pos.location.z)
         else:
-            print(scenario_npc[0][2], scenario_npc)
+            print(scenario_npc)
             npc = world.spawn_actor(vehicle_bp, carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4])))
             
         npc.set_autopilot(True)
@@ -170,9 +191,8 @@ class LgApSimulation:
         else:
             route = []
             for t in range(1, len(scenario_npc)):
-                route.append(scenario_npc[t][2])
+                route.append(carla.Transform(carla.Location(x=scenario_npc[t][2], y=scenario_npc[t][3], z=scenario_npc[t][4])))
             self.tm.set_path(npc, route)
-            
         
         # # manual
         # Location = carla.Location(posVector.x, posVector.y, posVector.z)
@@ -327,14 +347,13 @@ class LgApSimulation:
                 break
 
 
-        resultDic = {}
-        resultDic['pos'] = self.scenario_pos
-        resultDic['fault'] = ''
+        self.resultDic['pos'] = self.scenario_pos
+        self.resultDic['fault'] = ''
         if self.isEgoFault == True:
-                resultDic['fault'] = 'ego'
+                self.resultDic['fault'] = 'ego'
         util.print_debug(" === Finish simulation === ")
 
-        return resultDic
+        return self.resultDic
 
 
 ##################################### MAIN ###################################
@@ -343,6 +362,7 @@ objPath = sys.argv[1]
 resPath = sys.argv[2]
 numOfNpc = int(sys.argv[3])
 numOfTimeSlice = int(sys.argv[4])
+ego_position = sys.argv[5]
 
 
 
@@ -359,7 +379,7 @@ resultDic = {}
 #     resultDic['fitness'] = ''
 #     resultDic['fault'] = ''
 
-sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc)
+sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc, ego_position=ego_position)
 resultDic = sim.runSimulation(scenarioObj)
 
 # Send fitness score int object back to ge
