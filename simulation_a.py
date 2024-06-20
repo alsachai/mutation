@@ -68,19 +68,6 @@ class LgApSimulation:
     def initEV(self, ego_position=None):
         sim = self.sim
         world = self.world
-        world.tick()
-        actor_list = world.get_actors()
-        vehicles = actor_list.filter('vehicle.*')
-        if len(vehicles) != 0:
-            for vehicle in vehicles:
-                sensors = actor_list.filter('sensor.*')
-                for sensor in sensors:
-                    if sensor.parent and sensor.parent.id == vehicle.id:
-                        sensor.destroy()
-                        print("sensor destoried")
-                vehicle.destroy()
-                print("vehicle destoried")
-        
         blueprint_library = world.get_blueprint_library()
         vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
         vehicle_bp.set_attribute('role_name', 'hero')
@@ -222,7 +209,7 @@ class LgApSimulation:
         else:
             route = []
             for t in range(1, len(scenario_npc)):
-                route.append(carla.Transform(carla.Location(x=scenario_npc[t][2], y=scenario_npc[t][3], z=scenario_npc[t][4])))
+                route.append(carla.Location(x=scenario_npc[t][2], y=scenario_npc[t][3], z=scenario_npc[t][4]))
             self.tm.set_path(npc, route)
             
         self.tm.random_left_lanechange_percentage(npc, 0)
@@ -388,6 +375,13 @@ class LgApSimulation:
                 self.resultDic['fault'] = 'ego'
         util.print_debug(" === Finish simulation === ")
 
+        for npc in npcList:
+            npc.destroy()
+            print("destory npc")
+        self.ego.destroy()
+        print("destory ego")
+        self.detector_collision.destroy()
+        print("detory collision sensor")
         return self.resultDic
 
 
