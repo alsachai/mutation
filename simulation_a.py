@@ -192,6 +192,9 @@ class LgApSimulation:
         else:
             npc_pos = carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4]))
             npc = world.spawn_actor(vehicle_bp, npc_pos)
+            self.scenario_pos[num+1][0].append(npc_pos.location.x)
+            self.scenario_pos[num+1][0].append(npc_pos.location.y)
+            self.scenario_pos[num+1][0].append(npc_pos.location.z)
             
         npc.set_autopilot(True)
 
