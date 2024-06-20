@@ -90,7 +90,7 @@ class LgApSimulation:
             spawn_points = world.get_map().get_spawn_points()
             spawn_ego = random.choice(spawn_points)
             destination_ego = random.choice(spawn_points)
-            if destination_ego == spawn_ego:
+            while(destination_ego == spawn_ego):
                 destination_ego = random.choice(spawn_points)
         else:
             spawn_ego = carla.Transform(carla.Location(x=ego_position[0][0], y=ego_position[0][1], z=ego_position[0][2]))
