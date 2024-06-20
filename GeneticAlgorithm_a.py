@@ -228,7 +228,7 @@ class GeneticAlgorithm:
 
                 beforeMutation = copy.deepcopy(eachChs)
                 # select mutation index (npc, time)
-                index = random.randint(0, len(eachChs.period_conflicts))
+                index = random.randint(0, len(eachChs.period_conflicts)-1)
                 ego_time = eachChs.period_conflicts[index]['ego_time']
                 npc_index = eachChs.period_conflicts[index]['npc']
                 npc_time = eachChs.period_conflicts[index]['npc_time']
@@ -428,6 +428,6 @@ class GeneticAlgorithm:
 
 if __name__ == '__main__':
     bounds = [[0, 15], [0, 3], [0, 2], [0, 2], [2, 4]]
-    algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 4, 30, 2, 4, 3, 30)
+    algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 4, 30, 2, 5, 3, 30)
     algorithm.ga()
     pass
