@@ -76,10 +76,12 @@ class LgApSimulation:
                 sensors = actor_list.filter('sensor.*')
                 for sensor in sensors:
                     if sensor.parent and sensor.parent.id == vehicle.id:
-                        sensor.destroy()
-                        print("more sensor destoried")
-                vehicle.destroy()
-                print("more vehicle destoried")
+                        while(sensor.is_alive == False):
+                            sensor.destroy()
+                            print("more sensor destoried")
+                while(vehicle.is_alive == False):
+                    vehicle.destroy()
+                    print("more vehicle destoried")
 
         blueprint_library = world.get_blueprint_library()
         vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
@@ -393,12 +395,15 @@ class LgApSimulation:
         util.print_debug(" === Finish simulation === ")
 
         for npc in npcList:
-            npc.destroy()
-            print("destory npc")
-        self.ego.destroy()
-        print("destory ego")
-        self.detector_collision.destroy()
-        print("destory collision sensor")
+            while(npc.is_alive == False):
+                npc.destroy()
+            print("destroy npc")
+        while(self.ego.is_alive == False):
+            self.ego.destroy()
+            print("destroy ego")
+        while(self.detector_collision.is_alive == False):
+            self.detector_collision.destroy()
+            print("destroy collision sensor")
         return self.resultDic
 
 
