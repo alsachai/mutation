@@ -237,7 +237,7 @@ class GeneticAlgorithm:
 
                 if self.isStraight(ego_pos, npc_pos):
                     if ego_time > npc_time:
-                        prob = random.randint(0, 2)
+                        prob = random.randint(0, 1)
                         if prob == 0:  # decelerate
                             for t_s in range(npc_time - self.conflict_t if npc_time - self.conflict_t >= 0 else 0, npc_time):
                                 v_s = random.uniform(self.bounds[3][0], self.bounds[3][1])
@@ -251,7 +251,7 @@ class GeneticAlgorithm:
                     
                 else:
                     if ego_time > npc_time:
-                        prob = random.randint(0, 3)
+                        prob = random.randint(0, 2)
                         if prob == 0:       # decelerate
                             for t_s in range(npc_time - self.conflict_t if npc_time - self.conflict_t >= 0 else 0, npc_time):
                                 v_s = random.uniform(self.bounds[3][0], self.bounds[3][1])
@@ -277,10 +277,10 @@ class GeneticAlgorithm:
                             if eachChs.scenario[npc_index][t_s][0] > 0:
                                 eachChs.scenario[npc_index][t_s][0] += v_s
                                 
-                npc_index_1 = random.randint(0, eachChs.code_x1_length)
+                npc_index_1 = random.randint(0, eachChs.code_x1_length-1)
                 while npc_index_1 == npc_index:
-                    npc_index_1 = random.randint(0, eachChs.code_x1_length)
-                time_index_1 = random.randint(0, eachChs.code_x2_length)
+                    npc_index_1 = random.randint(0, eachChs.code_x1_length-1)
+                time_index_1 = random.randint(0, eachChs.code_x2_length-1)
                 actionIndex = random.randint(0, 2)
                 
                 if actionIndex == 0:
