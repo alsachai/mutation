@@ -76,10 +76,10 @@ class LgApSimulation:
                 sensors = actor_list.filter('sensor.*')
                 for sensor in sensors:
                     if sensor.parent and sensor.parent.id == vehicle.id:
-                        while(sensor.is_alive == False):
+                        while(sensor.is_alive == True):
                             sensor.destroy()
                             print("more sensor destoried")
-                while(vehicle.is_alive == False):
+                while(vehicle.is_alive == True):
                     vehicle.destroy()
                     print("more vehicle destoried")
 
@@ -395,13 +395,13 @@ class LgApSimulation:
         util.print_debug(" === Finish simulation === ")
 
         for npc in npcList:
-            while(npc.is_alive == False):
+            while(npc.is_alive == True):
                 npc.destroy()
             print("destroy npc")
-        while(self.ego.is_alive == False):
+        while(self.ego.is_alive == True):
             self.ego.destroy()
             print("destroy ego")
-        while(self.detector_collision.is_alive == False):
+        while(self.detector_collision.is_alive == True):
             self.detector_collision.destroy()
             print("destroy collision sensor")
         return self.resultDic

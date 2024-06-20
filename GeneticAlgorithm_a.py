@@ -428,6 +428,6 @@ class GeneticAlgorithm:
 
 if __name__ == '__main__':
     bounds = [[0, 15], [0, 3], [0, 2], [0, 2], [2, 4]]
-    algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 4, 30, 2, 5, 3, 30)
+    algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 20, 30, 2, 5, 3, 100)
     algorithm.ga()
     pass
