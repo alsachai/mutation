@@ -267,10 +267,9 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
         ego_path = self.resultDic['ego_pos']
-        if first_flag == True:
-            npc_spawn_points = random.sample(world.get_map().get_spawn_points(), self.numOfNpc)
+        npc_first_spawn = random.sample(world.get_map().get_spawn_points(), self.numOfNpc)
         for n in range(self.numOfNpc):
-            self.addNpcVehicle(scenarioObj[n], first_flag, npc_spawn_points[n], n, ego_path)
+            self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
         ################################################################
 
         # for npc in npcList:
