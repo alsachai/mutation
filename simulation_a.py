@@ -68,6 +68,19 @@ class LgApSimulation:
     def initEV(self, ego_position=None):
         sim = self.sim
         world = self.world
+        world.tick()
+        actor_list = world.get_actors()
+        vehicles = actor_list.filter('vehicle.*')
+        if len(vehicles) != 0:
+            for vehicle in vehicles:
+                sensors = actor_list.filter('sensor.*')
+                for sensor in sensors:
+                    if sensor.parent and sensor.parent.id == vehicle.id:
+                        sensor.destroy()
+                        print("more sensor destoried")
+                vehicle.destroy()
+                print("more vehicle destoried")
+
         blueprint_library = world.get_blueprint_library()
         vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
         vehicle_bp.set_attribute('role_name', 'hero')
