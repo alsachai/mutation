@@ -164,7 +164,7 @@ class LgApSimulation:
             time.sleep(1)
         print("Bridge connected")
 
-    def cal_intersect(p1_s, p1_g, p2_s, p2_g):
+    def cal_intersect(self, p1_s, p1_g, p2_s, p2_g):
         dx1 = p1_g.x - p1_s.x
         dy1 = p1_g.y - p1_s.y
         dx2 = p2_g.x - p2_s.x
@@ -211,7 +211,6 @@ class LgApSimulation:
             c_flag = False
             ego_s = carla.Location(x=ego_path[0][0], y=ego_path[0][1], z=ego_path[0][2])
             ego_g = carla.Location(x=ego_path[1][0], y=ego_path[1][1], z=ego_path[1][2])
-            destination = random.choice(spawn_points)
             while(c_flag == False):
                 destination = random.choice(spawn_points)
                 if destination.location == npc.get_location():
@@ -398,6 +397,8 @@ resPath = sys.argv[2]
 numOfNpc = int(sys.argv[3])
 numOfTimeSlice = int(sys.argv[4])
 ego_position = sys.argv[5]
+if ego_position == "None":
+    ego_position = None
 
 
 

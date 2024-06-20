@@ -153,7 +153,7 @@ class Chromosome:
                         min_distance_idx = np.argmin(distances)
 
                         if distances[min_distance_idx] < self.conflict_d:
-                            period_conflicts.appned({
+                            period_conflicts.append({
                                 "ego_time": t,
                                 "npc_time": t - dt,
                                 "npc": min_distance_idx + 1,
