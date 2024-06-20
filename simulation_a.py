@@ -30,7 +30,7 @@ class LgApSimulation:
         self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
         self.resultDic = {}
         self.initSimulator()
-        self.initEV(ego_position)
+        self.initEV(ego_position=ego_position)
         self.isEgoFault = False
         self.isHit = False
         # self.egoFaultDeltaD = 0
@@ -47,6 +47,7 @@ class LgApSimulation:
         self.world = client.get_world()
         self.tm = client.get_trafficmanager()
         self.tm.set_synchronous_mode(True)
+        
         
         # sim = lgsvl.Simulator(os.environ.get("SIMULATOR_HOST", "127.0.0.1"), 8181) 
         # self.sim = sim
@@ -163,7 +164,30 @@ class LgApSimulation:
             time.sleep(1)
         print("Bridge connected")
 
-    def addNpcVehicle(self, scenario_npc, first_flag, num):
+    def cal_intersect(p1_s, p1_g, p2_s, p2_g):
+        dx1 = p1_g.x - p1_s.x
+        dy1 = p1_g.y - p1_s.y
+        dx2 = p2_g.x - p2_s.x
+        dy2 = p2_g.y - p2_s.y
+    
+        d = dx1 * dy2 - dy1 * dx2
+        if d == 0:
+            if (p2_s.x - p1_s.x) * dy1 == (p2_s.y - p1_s.y) * dx1:
+                t0 = ((p2_s.x - p1_s.x) * dx1 + (p2_s.y - p1_s.y) * dy1) / (dx1**2 + dy1**2)
+                t1 = ((p2_g.x - p1_s.x) * dx1 + (p2_g.y - p1_s.y) * dy1) / (dx1**2 + dy1**2)
+                if (0 <= t0 <= 1) or (0 <= t1 <= 1) or (t0 <= 0 and t1 >= 1) or (t1 <= 0 and t0 >= 1):
+                    return True
+            return False
+
+        t2 = ((p2_s.x - p1_s.x) * dy2 - (p2_s.y - p1_s.y) * dx2) / d
+        t3 = ((p2_s.x - p1_s.x) * dy1 - (p2_s.y - p1_s.y) * dx1) / d
+
+        if 0 <= t2 <= 1 and 0 <= t3 <= 1:
+            return True
+    
+        return False
+
+    def addNpcVehicle(self, scenario_npc, first_flag, num, ego_path):
         sim = self.sim
         world = self.world
         npcList = self.npcList
@@ -178,21 +202,31 @@ class LgApSimulation:
             self.scenario_pos[num+1][0].append(npc_pos.location.y)
             self.scenario_pos[num+1][0].append(npc_pos.location.z)
         else:
-            print(scenario_npc)
-            npc = world.spawn_actor(vehicle_bp, carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4])))
+            npc_pos = carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4]))
+            npc = world.spawn_actor(vehicle_bp, npc_pos)
             
         npc.set_autopilot(True)
 
         if first_flag == True:
+            c_flag = False
+            ego_s = carla.Location(x=ego_path[0][0], y=ego_path[0][1], z=ego_path[0][2])
+            ego_g = carla.Location(x=ego_path[1][0], y=ego_path[1][1], z=ego_path[1][2])
             destination = random.choice(spawn_points)
-            if destination.location == npc.get_location():
+            while(c_flag == False):
                 destination = random.choice(spawn_points)
+                if destination.location == npc.get_location():
+                    continue
+                c_flag = self.cal_intersect(ego_s, ego_g, npc.get_location(), destination.location)
+                
             self.tm.set_path(npc, [destination.location])
         else:
             route = []
             for t in range(1, len(scenario_npc)):
                 route.append(carla.Transform(carla.Location(x=scenario_npc[t][2], y=scenario_npc[t][3], z=scenario_npc[t][4])))
             self.tm.set_path(npc, route)
+            
+        self.tm.random_left_lanechange_percentage(npc, 0)
+        self.tm.random_right_lanechange_percentage(npc, 0)
         
         # # manual
         # Location = carla.Location(posVector.x, posVector.y, posVector.z)
@@ -245,8 +279,9 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
+        ego_path = self.resultDic['ego_pos']
         for n in range(self.numOfNpc):
-            self.addNpcVehicle(scenarioObj[n], first_flag, n)
+            self.addNpcVehicle(scenarioObj[n], first_flag, n, ego_path)
         ################################################################
 
         # for npc in npcList:

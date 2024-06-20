@@ -16,7 +16,7 @@ import generateRestart
 class GeneticAlgorithm:
     def __init__(self, bounds, pm, pc, pop_size, NPC_size, time_size, conflict_t, conflict_d, period, max_gen):
         
-        self.bounds = bounds                # The value ranges of the inner most elements, [0]: speed, [1]: direction, [][0]: lower bound, [][1]: upper bound
+        self.bounds = bounds                # The value ranges of the inner most elements
         self.pm = pm
         self.pc = pc
         self.pop_size = pop_size            # Number of scenarios in the population
@@ -427,7 +427,7 @@ class GeneticAlgorithm:
         return r
 
 if __name__ == '__main__':
-    bounds = [[0, 70], [0, 3], [0, 10], [0, 4], [7, 10]]
+    bounds = [[0, 15], [0, 3], [0, 2], [0, 2], [2, 4]]
     algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 4, 30, 2, 4, 3, 30)
     algorithm.ga()
     pass
