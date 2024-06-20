@@ -146,7 +146,7 @@ class Chromosome:
                                 "npc_time": t + dt,
                                 "npc": min_distance_idx, 
                                 "distance": distances[min_distance_idx],
-                                "score": dt
+                                "score": self.conflict_t - dt
                             })
                             conflict_found = True
                             break
@@ -163,7 +163,7 @@ class Chromosome:
                                 "npc_time": t - dt,
                                 "npc": min_distance_idx,
                                 "distance": distances[min_distance_idx],
-                                "score": dt
+                                "score": self.conflict_t - dt
                             })
                             conflict_found = True
                             break

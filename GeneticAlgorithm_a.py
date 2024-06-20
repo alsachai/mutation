@@ -154,7 +154,7 @@ class GeneticAlgorithm:
                     ################## Start LIS #################
                     util.print_debug(" \n\n === Start of Local Iterative Search === \n\n")
                     # Increase mutation rate a little bit to jump out of local maxima
-                    lis = GeneticAlgorithm(self.bounds, (self.pm * 1.5), self.pc, self.pop_size, self.NPC_size, self.time_size, self.numOfGenInLis)
+                    lis = GeneticAlgorithm(self.bounds, (self.pm * 1.5), self.pc, self.pop_size, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period, self.numOfGenInLis)
                     lis.setLisPop(self.g_best)                
                     lis.setLisFlag()
                     lisBestChs = lis.ga()

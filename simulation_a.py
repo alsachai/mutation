@@ -214,9 +214,9 @@ class LgApSimulation:
             for t in range(1, len(scenario_npc)):
                 route.append(carla.Location(x=scenario_npc[t][2], y=scenario_npc[t][3], z=scenario_npc[t][4]))
             self.tm.set_path(npc, route)
+            # self.tm.random_left_lanechange_percentage(npc, 0)
+            # self.tm.random_right_lanechange_percentage(npc, 0)
             
-        self.tm.random_left_lanechange_percentage(npc, 0)
-        self.tm.random_right_lanechange_percentage(npc, 0)
         
         # # manual
         # Location = carla.Location(posVector.x, posVector.y, posVector.z)
@@ -385,7 +385,7 @@ class LgApSimulation:
         self.ego.destroy()
         print("destory ego")
         self.detector_collision.destroy()
-        print("detory collision sensor")
+        print("destory collision sensor")
         return self.resultDic
 
 
