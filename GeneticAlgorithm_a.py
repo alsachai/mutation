@@ -228,9 +228,9 @@ class GeneticAlgorithm:
 
                 beforeMutation = copy.deepcopy(eachChs)
                 # select mutation index (npc, time)
-                index = random.randint(0, len(eachChs.period_conflicts) - 1)
+                index = random.randint(0, len(eachChs.period_conflicts))
                 ego_time = eachChs.period_conflicts[index]['ego_time']
-                npc_index = eachChs.period_conflicts[index]['npc'] - 1
+                npc_index = eachChs.period_conflicts[index]['npc']
                 npc_time = eachChs.period_conflicts[index]['npc_time']
                 ego_pos = eachChs.scenario_pos[0][ego_time]
                 npc_pos = eachChs.scenario_pos[npc_index][npc_time]
@@ -277,10 +277,10 @@ class GeneticAlgorithm:
                             if eachChs.scenario[npc_index][t_s][0] > 0:
                                 eachChs.scenario[npc_index][t_s][0] += v_s
                                 
-                npc_index_1 = random.randint(0, eachChs.code_x1_length-1)
+                npc_index_1 = random.randint(0, eachChs.code_x1_length)
                 while npc_index_1 == npc_index:
-                    npc_index_1 = random.randint(0, eachChs.code_x1_length-1)
-                time_index_1 = random.randint(0, eachChs.code_x2_length-1)
+                    npc_index_1 = random.randint(0, eachChs.code_x1_length)
+                time_index_1 = random.randint(0, eachChs.code_x2_length)
                 actionIndex = random.randint(0, 2)
                 
                 if actionIndex == 0:

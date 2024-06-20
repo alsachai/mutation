@@ -56,13 +56,18 @@ class Chromosome:
         pickle.dump(self.scenario, s_f)  # Pickle the scenario object
         s_f.truncate()
         s_f.close()       
+
+        e_f = open('ego_path.obj', 'wb')
+        pickle.dump(self.ego_path, e_f)  # Pickle the ego path object
+        e_f.truncate()
+        e_f.close()
         
         for x in range(0, 100):	
 
             if os.path.isfile('result.obj') == True:
                 os.remove("result.obj")
 
-            os.system("python3 simulation_a.py scenario.obj result.obj {} {} {}".format(self.code_x1_length, self.code_x2_length, self.ego_path))
+            os.system("python3 simulation_a.py scenario.obj result.obj ego_path.obj {} {}".format(self.code_x1_length, self.code_x2_length))
             resultObj = None
 
             # Read fitness score
@@ -139,7 +144,7 @@ class Chromosome:
                             period_conflicts.append({
                                 "ego_time": t,
                                 "npc_time": t + dt,
-                                "npc": min_distance_idx + 1, 
+                                "npc": min_distance_idx, 
                                 "distance": distances[min_distance_idx],
                                 "score": dt
                             })
@@ -156,7 +161,7 @@ class Chromosome:
                             period_conflicts.append({
                                 "ego_time": t,
                                 "npc_time": t - dt,
-                                "npc": min_distance_idx + 1,
+                                "npc": min_distance_idx,
                                 "distance": distances[min_distance_idx],
                                 "score": dt
                             })

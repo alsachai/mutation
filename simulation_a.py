@@ -77,6 +77,7 @@ class LgApSimulation:
                 for sensor in sensors:
                     if sensor.parent and sensor.parent.id == vehicle.id:
                         sensor.destroy()
+                        print("sensor destoried")
                 vehicle.destroy()
                 print("vehicle destoried")
         
@@ -394,17 +395,19 @@ class LgApSimulation:
 # Read scenario obj 
 objPath = sys.argv[1]
 resPath = sys.argv[2]
-numOfNpc = int(sys.argv[3])
-numOfTimeSlice = int(sys.argv[4])
-ego_position = sys.argv[5]
-if ego_position == "None":
-    ego_position = None
+egoPath = sys.argv[3]
+numOfNpc = int(sys.argv[4])
+numOfTimeSlice = int(sys.argv[5])
 
 
 
 objF = open(objPath, 'rb')
 scenarioObj = pickle.load(objF)
 objF.close()
+
+egoF = open(egoPath, 'rb')
+ego_position = pickle.load(egoF)
+egoF.close()
 
 resultDic = {}
 # try:
