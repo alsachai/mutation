@@ -84,7 +84,7 @@ class LgApSimulation:
                     print("more vehicle destoried")
 
         blueprint_library = world.get_blueprint_library()
-        vehicle_bp = blueprint_library.filter('vehicle.toyota.prius')
+        vehicle_bp = blueprint_library.find('vehicle.toyota.prius')
         vehicle_bp.set_attribute('role_name', 'hero')
 
         ego_path=[[] for i in range(2)]
