@@ -23,6 +23,7 @@ class Chromosome:
         self.period = period
         self.timeoutTime = 300 # in seconds, timeout timer for simulator execution per each scenario simulation
         self.ego_path = None
+        self.is_accident = False
 
     def fix_init(self):
         for i in range(self.code_x1_length):        # For every NPC
@@ -88,20 +89,6 @@ class Chromosome:
     def func(self, gen=None, lisFlag=False):
         resultObj = self.decoding()
         self.ego_path = resultObj['ego_pos']
-        get_pos = resultObj['pos']
-        for i in range(self.code_x1_length):        # For every NPC
-            for j in range(self.code_x2_length):    # For every time slice
-                self.scenario[i][j].append(get_pos[i+1][j][0])
-                self.scenario[i][j].append(get_pos[i+1][j][1])
-                self.scenario[i][j].append(get_pos[i+1][j][2])
-        self.scenario_pos = [[[] for i in range(self.code_x2_length)] for j in range(self.code_x1_length+1)]
-        for i in range(self.code_x1_length + 1):        # For every NPC
-            for j in range(self.code_x2_length):    # For every time slice
-                self.scenario_pos[i][j].append(get_pos[i][j][0])
-                self.scenario_pos[i][j].append(get_pos[i][j][1])
-                self.scenario_pos[i][j].append(get_pos[i][j][2])
-        self.period_conflicts = self.findConflicts()
-        self.y = sum(conflict['score'] for conflict in self.period_conflicts if conflict is not None)
         if resultObj['fault'] == 'ego':
                 # An accident        
                 util.print_debug(" ***** Found an accident where ego is at fault ***** ")
@@ -117,6 +104,22 @@ class Chromosome:
                 pickle.dump(self, a_f)
                 a_f.truncate() 
                 a_f.close()
+                self.is_accident = True
+        else:
+            get_pos = resultObj['pos']
+            for i in range(self.code_x1_length):        # For every NPC
+                for j in range(self.code_x2_length):    # For every time slice
+                    self.scenario[i][j].append(get_pos[i+1][j][0])
+                    self.scenario[i][j].append(get_pos[i+1][j][1])
+                    self.scenario[i][j].append(get_pos[i+1][j][2])
+            self.scenario_pos = [[[] for i in range(self.code_x2_length)] for j in range(self.code_x1_length+1)]
+            for i in range(self.code_x1_length + 1):        # For every NPC
+                for j in range(self.code_x2_length):    # For every time slice
+                    self.scenario_pos[i][j].append(get_pos[i][j][0])
+                    self.scenario_pos[i][j].append(get_pos[i][j][1])
+                    self.scenario_pos[i][j].append(get_pos[i][j][2])
+            self.period_conflicts = self.findConflicts()
+            self.y = sum(conflict['score'] for conflict in self.period_conflicts if conflict is not None)
     
 
         

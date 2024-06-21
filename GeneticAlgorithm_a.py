@@ -171,12 +171,15 @@ class GeneticAlgorithm:
         return self.g_best
 
     def init_pop(self):
-        for i in range(self.pop_size):
+        i = 0
+        while(i<self.pop_size):
             # A chromosome is a scenario
             chromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
             chromosome.rand_init()
             chromosome.func()
-            self.pop.append(chromosome)
+            if chromosome.is_accident == False:
+                self.pop.append(chromosome)
+                i += 1
 
     def cross(self):
         # Implementation of random crossover (exchange npc)
