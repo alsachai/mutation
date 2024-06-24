@@ -71,6 +71,8 @@ def generateRestart(ck_path, scenarioNum, bounds, conflict_d, conflict_t, period
 		if j == popSize:
 			break
 		newPopCandiate[i].func()
+		if newPopCandiate[i].is_accident:
+			continue
 		newScenarioList.append(newPopCandiate[i])
 		j += 1
 

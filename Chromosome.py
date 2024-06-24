@@ -109,6 +109,9 @@ class Chromosome:
             self.is_accident = False
             get_pos = resultObj['pos']
             for i in range(self.code_x1_length):        # For every NPC
+                self.scenario[i][0].append(get_pos[i+1][0][3])
+                self.scenario[i][0].append(get_pos[i+1][0][4])
+                self.scenario[i][0].append(get_pos[i+1][0][5])
                 for j in range(self.code_x2_length):    # For every time slice
                     self.scenario[i][j].append(get_pos[i+1][j][0])
                     self.scenario[i][j].append(get_pos[i+1][j][1])
@@ -180,9 +183,9 @@ class Chromosome:
         return period_conflicts
 
 
-# Test
-if __name__ == '__main__':
-    a = [[10, 30], [0, 2]]
-    chromosome = Chromosome(a, 5, 10)
-    pprint.pprint(chromosome.scenario)
+# # Test
+# if __name__ == '__main__':
+#     a = [[10, 30], [0, 2]]
+#     chromosome = Chromosome(a, 5, 10)
+#     pprint.pprint(chromosome.scenario)
 

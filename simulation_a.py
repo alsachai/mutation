@@ -96,7 +96,7 @@ class LgApSimulation:
             while(destination_ego == spawn_ego):
                 destination_ego = random.choice(spawn_points)
         else:
-            spawn_ego = carla.Transform(carla.Location(x=ego_position[0][0], y=ego_position[0][1], z=ego_position[0][2]))
+            spawn_ego = carla.Transform(carla.Location(x=ego_position[0][0], y=ego_position[0][1], z=ego_position[0][2]), carla.Rotation(pitch=ego_position[0][3], yaw=ego_position[0][4], roll=ego_position[0][5]))
             destination_ego = carla.Transform(carla.Location(x=ego_position[1][0], y=ego_position[1][1], z=ego_position[1][2]))
 
         
@@ -107,9 +107,15 @@ class LgApSimulation:
         self.scenario_pos[0][0].append(spawn_ego.location.x)
         self.scenario_pos[0][0].append(spawn_ego.location.y)
         self.scenario_pos[0][0].append(spawn_ego.location.z)
+        self.scenario_pos[0][0].append(spawn_ego.rotation.pitch)
+        self.scenario_pos[0][0].append(spawn_ego.rotation.yaw)
+        self.scenario_pos[0][0].append(spawn_ego.rotation.roll)
         ego_path[0].append(spawn_ego.location.x)
         ego_path[0].append(spawn_ego.location.y)
         ego_path[0].append(spawn_ego.location.z)
+        ego_path[0].append(spawn_ego.rotation.pitch)
+        ego_path[0].append(spawn_ego.rotation.yaw)
+        ego_path[0].append(spawn_ego.rotation.roll)
         ego_path[1].append(destination_ego.location.x)
         ego_path[1].append(destination_ego.location.y)
         ego_path[1].append(destination_ego.location.z)
@@ -205,12 +211,18 @@ class LgApSimulation:
             self.scenario_pos[num+1][0].append(npc_pos.location.x)
             self.scenario_pos[num+1][0].append(npc_pos.location.y)
             self.scenario_pos[num+1][0].append(npc_pos.location.z)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.pitch)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.yaw)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.roll)
         else:
-            npc_pos = carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4]))
+            npc_pos = carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4]), carla.Rotation(pitch=scenario_npc[0][5], yaw=scenario_npc[0][6], roll=scenario_npc[0][7]))
             npc = world.spawn_actor(vehicle_bp, npc_pos)
             self.scenario_pos[num+1][0].append(npc_pos.location.x)
             self.scenario_pos[num+1][0].append(npc_pos.location.y)
             self.scenario_pos[num+1][0].append(npc_pos.location.z)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.pitch)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.yaw)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.roll)
             
         npc.set_autopilot(True)
 

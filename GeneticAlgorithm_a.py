@@ -220,7 +220,7 @@ class GeneticAlgorithm:
 
     def isStraight(self, ego_pos, npc_pos):      
         if npc_pos[0] + 4.6 < ego_pos[0] and npc_pos[0] + 20 > ego_pos[0]: 
-            if npc_pos[2] > ego_pos[2] - 2 and npc_pos[2] < ego_pos[2] + 2: 
+            if npc_pos[1] > ego_pos[1] - 2 and npc_pos[1] < ego_pos[1] + 2: 
                 return True  
                 
     def mutation(self):
