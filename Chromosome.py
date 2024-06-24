@@ -92,6 +92,7 @@ class Chromosome:
         if resultObj['fault'] == 'ego':
                 # An accident        
                 util.print_debug(" ***** Found an accident where ego is at fault ***** ")
+                self.is_accident = True
                 # Dump the scenario where causes the accident
                 if os.path.exists('AccidentScenario') == False:
                     os.mkdir('AccidentScenario')
@@ -104,8 +105,8 @@ class Chromosome:
                 pickle.dump(self, a_f)
                 a_f.truncate() 
                 a_f.close()
-                self.is_accident = True
         else:
+            self.is_accident = False
             get_pos = resultObj['pos']
             for i in range(self.code_x1_length):        # For every NPC
                 for j in range(self.code_x2_length):    # For every time slice

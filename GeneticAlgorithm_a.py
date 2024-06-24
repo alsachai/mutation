@@ -178,6 +178,7 @@ class GeneticAlgorithm:
             chromosome.rand_init()
             chromosome.func()
             if chromosome.is_accident == False:
+                print(" --- The scenario is not an accident, add to the population. ---")
                 self.pop.append(chromosome)
                 i += 1
 
@@ -394,16 +395,12 @@ class GeneticAlgorithm:
             if r < q[0]:
                 selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                 selectedChromosome.scenario = self.pop[0].scenario
-                selectedChromosome.scenario_pos = self.pop[0].scenario_pos
-                selectedChromosome.period_conflicts = self.pop[0].period_conflicts
                 selectedChromosome.y = self.pop[0].y
                 v.append(selectedChromosome)
             for j in range(1, self.pop_size):
                 if q[j - 1] < r <= q[j]:
                     selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                     selectedChromosome.scenario = self.pop[j].scenario
-                    selectedChromosome.scenario_pos = self.pop[j].scenario_pos
-                    selectedChromosome.period_conflicts = self.pop[j].period_conflicts
                     selectedChromosome.y = self.pop[j].y
                     v.append(selectedChromosome)
         self.pop = copy.deepcopy(v)
