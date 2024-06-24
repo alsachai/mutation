@@ -127,7 +127,7 @@ class GeneticAlgorithm:
             if noprogress == True and not self.isInLis:
                 util.print_debug(" ###### Restart Based on Generation: " + str(i) + " ###### ")
                 oldCkName = 'GaCheckpoints'
-                newPop = generateRestart.generateRestart(oldCkName, 1000, self.bounds)
+                newPop = generateRestart.generateRestart(oldCkName, 1000, self.bounds, self.conflict_d, self.conflict_t, self.period)
                 self.pop = copy.deepcopy(newPop)
                 self.hasRestarted = True
                 best, self.bestIndex = self.find_best()

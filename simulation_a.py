@@ -130,7 +130,7 @@ class LgApSimulation:
         
         def collision_callback(event):
             self.isHit = True
-            print("***** There is an accident! *****")
+            util.print_debug("***** There is an accident! *****")
 
             # Check if the ego vehicle is involved in the collision
             other_actor = event.other_actor
@@ -395,19 +395,19 @@ class LgApSimulation:
                 self.resultDic['fault'] = 'ego'
         util.print_debug(" === Finish simulation === ")
         
-        print("{} NPCs are waiting to be destroyed".format(len(npcList)))
+        util.print_debug("{} NPCs are waiting to be destroyed".format(len(npcList)))
         npc_count = 0
         for npc in npcList:
             while(npc.is_alive == True):
                 npc.destroy()
             npc_count += 1
-        print("{} NPCs are destroyed".format(npc_count))
+        util.print_debugt("{} NPCs are destroyed".format(npc_count))
         while(self.ego.is_alive == True):
             self.ego.destroy()
-            print("destroy ego")
+            util.print_debug("destroy ego")
         while(self.detector_collision.is_alive == True):
             self.detector_collision.destroy()
-            print("destroy collision sensor")
+            util.print_debug("destroy collision sensor")
         return self.resultDic
 
 
