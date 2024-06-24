@@ -214,6 +214,8 @@ class GeneticAlgorithm:
                 pop_j.scenario_pos[swap_index] = copy.deepcopy(pop_i.scenario_pos[swap_index])
                 pop_i.scenario_pos[swap_index] = temp
 
+
+
                 
 
     def isStraight(self, ego_pos, npc_pos):      
@@ -396,12 +398,20 @@ class GeneticAlgorithm:
                 selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                 selectedChromosome.scenario = self.pop[0].scenario
                 selectedChromosome.y = self.pop[0].y
+                selectedChromosome.ego_path = self.pop[j].ego_path
+                selectedChromosome.is_accident = False
+                selectedChromosome.scenario_pos = self.pop[j].scenario_pos
+                selectedChromosome.period_conflicts = self.pop[j].period_conflicts
                 v.append(selectedChromosome)
             for j in range(1, self.pop_size):
                 if q[j - 1] < r <= q[j]:
                     selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                     selectedChromosome.scenario = self.pop[j].scenario
                     selectedChromosome.y = self.pop[j].y
+                    selectedChromosome.ego_path = self.pop[j].ego_path
+                    selectedChromosome.is_accident = False
+                    selectedChromosome.scenario_pos = self.pop[j].scenario_pos
+                    selectedChromosome.period_conflicts = self.pop[j].period_conflicts
                     v.append(selectedChromosome)
         self.pop = copy.deepcopy(v)
         ############################################################
