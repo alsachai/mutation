@@ -394,6 +394,7 @@ class LgApSimulation:
         if self.isEgoFault == True:
                 self.resultDic['fault'] = 'ego'
         util.print_debug(" === Finish simulation === ")
+        self.sim.stop_recorder()
         
         util.print_debug("{} NPCs are waiting to be destroyed".format(len(npcList)))
         npc_count = 0
@@ -401,7 +402,7 @@ class LgApSimulation:
             while(npc.is_alive == True):
                 npc.destroy()
             npc_count += 1
-        util.print_debugt("{} NPCs are destroyed".format(npc_count))
+        util.print_debug("{} NPCs are destroyed".format(npc_count))
         while(self.ego.is_alive == True):
             self.ego.destroy()
             util.print_debug("destroy ego")
