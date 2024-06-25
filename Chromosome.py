@@ -113,7 +113,7 @@ class Chromosome:
                     self.scenario[i][j].append(get_pos[i+1][j][0])
                     self.scenario[i][j].append(get_pos[i+1][j][1])
                     self.scenario[i][j].append(get_pos[i+1][j][2])
-                    if i == 0:
+                    if j == 0:
                         self.scenario[i][0].append(get_pos[i+1][0][3])
                         self.scenario[i][0].append(get_pos[i+1][0][4])
                         self.scenario[i][0].append(get_pos[i+1][0][5])
