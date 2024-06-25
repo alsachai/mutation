@@ -109,13 +109,15 @@ class Chromosome:
             self.is_accident = False
             get_pos = resultObj['pos']
             for i in range(self.code_x1_length):        # For every NPC
-                self.scenario[i][0].append(get_pos[i+1][0][3])
-                self.scenario[i][0].append(get_pos[i+1][0][4])
-                self.scenario[i][0].append(get_pos[i+1][0][5])
                 for j in range(self.code_x2_length):    # For every time slice
                     self.scenario[i][j].append(get_pos[i+1][j][0])
                     self.scenario[i][j].append(get_pos[i+1][j][1])
                     self.scenario[i][j].append(get_pos[i+1][j][2])
+                    if i == 0:
+                        self.scenario[i][0].append(get_pos[i+1][0][3])
+                        self.scenario[i][0].append(get_pos[i+1][0][4])
+                        self.scenario[i][0].append(get_pos[i+1][0][5])
+                        
             self.scenario_pos = [[[] for i in range(self.code_x2_length)] for j in range(self.code_x1_length+1)]
             for i in range(self.code_x1_length + 1):        # For every NPC
                 for j in range(self.code_x2_length):    # For every time slice
