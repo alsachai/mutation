@@ -245,43 +245,85 @@ class GeneticAlgorithm:
                     if ego_time > npc_time:
                         prob = random.randint(0, 1)
                         if prob == 0:  # decelerate
+                            count = 0
+                            temp = 0
                             for t_s in range(npc_time - self.conflict_t if npc_time - self.conflict_t >= 0 else 0, npc_time):
+                                if count == 0:
+                                    temp = eachChs.scenario[npc_index][t_s][0]
+                                    count += 1
                                 v_s = random.uniform(self.bounds[3][0], self.bounds[3][1])
-                                if eachChs.scenario[npc_index][t_s][0] > 0:
-                                    eachChs.scenario[npc_index][t_s][0] -= v_s
+                                
+                                if temp - v_s > 0:
+                                    temp -= v_s
+                                eachChs.scenario[npc_index][t_s][0] = temp
                         else:          # brake
+                            count = 0
+                            temp = 0
                             for t_s in range(npc_time - self.conflict_t if npc_time - self.conflict_t >= 0 else 0, npc_time):
+                                if count == 0:
+                                    temp = eachChs.scenario[npc_index][t_s][0]
+                                    count += 1
                                 v_s = random.uniform(self.bounds[4][0], self.bounds[4][1])
-                                if eachChs.scenario[npc_index][t_s][0] > 0:
-                                    eachChs.scenario[npc_index][t_s][0] -= v_s
+                                if temp - v_s > 0:
+                                    temp -= v_s
+                                eachChs.scenario[npc_index][t_s][0] = temp
                     
                 else:
                     if ego_time > npc_time:
                         prob = random.randint(0, 2)
                         if prob == 0:       # decelerate
+                            count = 0
+                            temp = 0
                             for t_s in range(npc_time - self.conflict_t if npc_time - self.conflict_t >= 0 else 0, npc_time):
+                                if count == 0:
+                                    temp = eachChs.scenario[npc_index][t_s][0]
+                                    count += 1
                                 v_s = random.uniform(self.bounds[3][0], self.bounds[3][1])
-                                if eachChs.scenario[npc_index][t_s][0] > 0:
-                                    eachChs.scenario[npc_index][t_s][0] -= v_s
+                                if temp - v_s > 0:
+                                    temp -= v_s
+                                eachChs.scenario[npc_index][t_s][0] = temp
                         elif prob == 1:          # brake
+                            count = 0
+                            temp = 0
                             for t_s in range(npc_time, ego_time):
+                                if count == 0:
+                                    temp = eachChs.scenario[npc_index][t_s][0]
+                                    count += 1
                                 v_s = random.uniform(self.bounds[4][0], self.bounds[4][1])
-                                if eachChs.scenario[npc_index][t_s][0] > 0:
-                                    eachChs.scenario[npc_index][t_s][0] -= v_s
+                                if temp - v_s > 0:
+                                    temp -= v_s
+                                eachChs.scenario[npc_index][t_s][0] = temp
                         else:
+                            count = 0
+                            temp = 0
                             for t_s in range(npc_time - self.conflict_t if npc_time - self.conflict_t >= 0 else 0, npc_time):
+                                if count == 0:
+                                    temp = eachChs.scenario[npc_index][t_s][0]
+                                    count += 1
                                 v_s = random.uniform(self.bounds[3][0], self.bounds[3][1])
-                                if eachChs.scenario[npc_index][t_s][0] > 0:
-                                    eachChs.scenario[npc_index][t_s][0] -= v_s
+                                if temp - v_s > 0:
+                                    temp -= v_s
+                                eachChs.scenario[npc_index][t_s][0] = temp
+                            count = 0
+                            temp = 0
                             for t_s in range(npc_time, ego_time):
+                                if count == 0:
+                                    temp = eachChs.scenario[npc_index][t_s][0]
+                                    count += 1
                                 v_s = random.uniform(self.bounds[4][0], self.bounds[4][1])
-                                if eachChs.scenario[npc_index][t_s][0] > 0:
-                                    eachChs.scenario[npc_index][t_s][0] -= v_s
+                                if temp - v_s > 0:
+                                    temp -= v_s
+                                eachChs.scenario[npc_index][t_s][0] = temp
                     elif ego_time < npc_time:
+                        count = 0
+                        temp = 0
                         for t_s in range(ego_time - self.conflict_t if ego_time - self.conflict_t >= 0 else 0, ego_time): # accelerate
+                            if count == 0:
+                                temp = eachChs.scenario[npc_index][t_s][0]
+                                count += 1
                             v_s = random.uniform(self.bounds[2][0], self.bounds[2][1])
-                            if eachChs.scenario[npc_index][t_s][0] > 0:
-                                eachChs.scenario[npc_index][t_s][0] += v_s
+                            temp += v_s
+                            eachChs.scenario[npc_index][t_s][0] = temp
                                 
                 npc_index_1 = random.randint(0, eachChs.code_x1_length-1)
                 while npc_index_1 == npc_index:
@@ -437,7 +479,7 @@ class GeneticAlgorithm:
         return r
 
 if __name__ == '__main__':
-    bounds = [[0, 15], [0, 3], [0, 2], [0, 2], [2, 4]]
+    bounds = [[0, 15], [0, 3], [0, 2], [0, 1], [2, 3]]
     algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 20, 30, 2, 5, 3, 100)
     algorithm.ga()
     pass
