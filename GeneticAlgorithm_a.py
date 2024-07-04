@@ -11,11 +11,10 @@ from datetime import datetime
 import util
 import tools
 import generateRestart
-
+import carla
 
 class GeneticAlgorithm:
     def __init__(self, bounds, pm, pc, pop_size, NPC_size, time_size, conflict_t, conflict_d, period, max_gen):
-        
         self.bounds = bounds                # The value ranges of the inner most elements
         self.pm = pm
         self.pc = pc
@@ -39,6 +38,12 @@ class GeneticAlgorithm:
         self.hasRestarted = False
         self.lastRestartGen = 0
         self.bestYAfterRestart = 0
+        
+        client = carla.Client('localhost', 2000)
+        world = client.get_world()
+        self.map = world.get_map()
+        
+        
 
     def set_checkpoint(self, ck_path):
         self.ck_path = ck_path
@@ -213,15 +218,22 @@ class GeneticAlgorithm:
                 temp = copy.deepcopy(pop_j.scenario_pos[swap_index])
                 pop_j.scenario_pos[swap_index] = copy.deepcopy(pop_i.scenario_pos[swap_index])
                 pop_i.scenario_pos[swap_index] = temp
-
-
-
                 
 
-    def isStraight(self, ego_pos, npc_pos):      
-        if npc_pos[0] + 4.6 < ego_pos[0] and npc_pos[0] + 20 > ego_pos[0]: 
-            if npc_pos[1] > ego_pos[1] - 2 and npc_pos[1] < ego_pos[1] + 2: 
-                return True  
+    def isStraight(self, ego_pos, npc_pos, npc_pos_last, ego_time, npc_time):
+        if ego_time > npc_time:
+            ego_position = self.map.get_waypoint(carla.Location(x=ego_pos[0], y=ego_pos[1], z=ego_pos[2]))
+            npc_position = self.map.get_waypoint(carla.Location(x=npc_pos[0], y=npc_pos[1], z=npc_pos[2]))
+            if npc_pos_last is not None:
+                npc_position_last = self.map.get_waypoint(carla.Location(x=npc_pos_last[0], y=npc_pos_last[1], z=npc_pos_last[2]))
+                if npc_position_last.road_id == npc_position.road_id and npc_position_last.lane_id != ego_position.lane_id:
+                    return False
+            if ego_position.road_id == npc_position.road_id and ego_position.lane_id == npc_position.lane_id:
+                return True
+            else:
+                return False
+        else:
+            return False
                 
     def mutation(self):
         i = 0
@@ -238,8 +250,12 @@ class GeneticAlgorithm:
                 ego_time = eachChs.period_conflicts[index]['ego_time']
                 npc_index = eachChs.period_conflicts[index]['npc']
                 npc_time = eachChs.period_conflicts[index]['npc_time']
-                ego_pos = eachChs.scenario_pos[0][ego_time]
+                ego_pos = eachChs.scenario_pos[0][npc_time]            # check the position of ego when npc arrives the conflict point
                 npc_pos = eachChs.scenario_pos[npc_index][npc_time]
+                if npc_time - 1 >= 0:
+                    npc_pos_last = eachChs.scenario_pos[npc_index][npc_time - 1]
+                else:
+                    npc_pos_last = None
 
                 if self.isStraight(ego_pos, npc_pos):
                     if ego_time > npc_time:
@@ -324,7 +340,7 @@ class GeneticAlgorithm:
                             v_s = random.uniform(self.bounds[2][0], self.bounds[2][1])
                             temp += v_s
                             eachChs.scenario[npc_index][t_s][0] = temp
-                                
+                # random mutate a npc           
                 npc_index_1 = random.randint(0, eachChs.code_x1_length-1)
                 while npc_index_1 == npc_index:
                     npc_index_1 = random.randint(0, eachChs.code_x1_length-1)
@@ -480,6 +496,6 @@ class GeneticAlgorithm:
 
 if __name__ == '__main__':
     bounds = [[0, 15], [0, 3], [0, 2], [0, 1], [2, 3]]
-    algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 20, 30, 2, 5, 3, 100)
+    algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 20, 30, 2, 2, 3, 100)
     algorithm.ga()
     pass

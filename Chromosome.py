@@ -133,24 +133,7 @@ class Chromosome:
             for t in range(start_time, end_time):
                 ego_pos = self.scenario_pos[0][t]
                 conflict_found = False
-                # Check future positions
                 for dt in range(0, self.conflict_t + 1):
-                    if t + dt < end_time: 
-                        future_pos_index = t + dt - start_time
-                        future_positions = [self.scenario_pos[m][t + dt] for m in range(1, self.code_x1_length + 1)]
-                        distances = np.linalg.norm(np.array(future_positions) - np.array(ego_pos), axis=1)
-                        min_distance_idx = np.argmin(distances)
-
-                        if distances[min_distance_idx] < self.conflict_d:
-                            period_conflicts.append({
-                                "ego_time": t,
-                                "npc_time": t + dt,
-                                "npc": min_distance_idx, 
-                                "distance": distances[min_distance_idx],
-                                "score": self.conflict_t - dt
-                            })
-                            conflict_found = True
-                            break
                     # Check past positions
                     if t - dt >= start_time: 
                         past_pos_index = t - dt - start_time
@@ -163,6 +146,23 @@ class Chromosome:
                                 "ego_time": t,
                                 "npc_time": t - dt,
                                 "npc": min_distance_idx,
+                                "distance": distances[min_distance_idx],
+                                "score": self.conflict_t - dt
+                            })
+                            conflict_found = True
+                            break
+                    # Check future positions
+                    if t + dt < end_time: 
+                        future_pos_index = t + dt - start_time
+                        future_positions = [self.scenario_pos[m][t + dt] for m in range(1, self.code_x1_length + 1)]
+                        distances = np.linalg.norm(np.array(future_positions) - np.array(ego_pos), axis=1)
+                        min_distance_idx = np.argmin(distances)
+
+                        if distances[min_distance_idx] < self.conflict_d:
+                            period_conflicts.append({
+                                "ego_time": t,
+                                "npc_time": t + dt,
+                                "npc": min_distance_idx, 
                                 "distance": distances[min_distance_idx],
                                 "score": self.conflict_t - dt
                             })
