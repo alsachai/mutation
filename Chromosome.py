@@ -22,7 +22,6 @@ class Chromosome:
         self.conflict_d = conflict_d
         self.period = period
         self.timeoutTime = 300 # in seconds, timeout timer for simulator execution per each scenario simulation
-        self.ego_path = None
         self.is_accident = False
 
     def fix_init(self):
@@ -57,11 +56,6 @@ class Chromosome:
         pickle.dump(self.scenario, s_f)  # Pickle the scenario object
         s_f.truncate()
         s_f.close()       
-
-        e_f = open('ego_path.obj', 'wb')
-        pickle.dump(self.ego_path, e_f)  # Pickle the ego path object
-        e_f.truncate()
-        e_f.close()
         
         for x in range(0, 100):	
 
@@ -88,7 +82,6 @@ class Chromosome:
     # Get fitness score of the scenario
     def func(self, gen=None, lisFlag=False):
         resultObj = self.decoding()
-        self.ego_path = resultObj['ego_pos']
         if resultObj['fault'] == 'ego':
                 # An accident        
                 util.print_debug(" ***** Found an accident where ego is at fault ***** ")
@@ -96,8 +89,7 @@ class Chromosome:
                 # Dump the scenario where causes the accident
                 if os.path.exists('AccidentScenario') == False:
                     os.mkdir('AccidentScenario')
-                now = datetime.now()
-                date_time = now.strftime("%m-%d-%Y-%H-%M-%S")
+                date_time = resultObj['time']
                 ckName = 'AccidentScenario/accident-gen' + str(gen) + '-' + date_time
                 if lisFlag == True:
                     ckName = ckName + "-LIS"

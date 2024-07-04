@@ -15,7 +15,7 @@ import carla
      
 class LgApSimulation:
 
-    def __init__(self, numOfTimeSlice, numOfNpc, ego_position=None):
+    def __init__(self, numOfTimeSlice, numOfNpc, ego_info=None):
         ################################################################
         # self.bridgeLogPath = "/home/av-input/Workplace/apollo-lg/apollo-3.5/data/log/cyber_bridge.INFO"
         ################################################################
@@ -27,17 +27,18 @@ class LgApSimulation:
         self.npcList = [] # The list contains all the npc added
         self.numOfTimeSlice = numOfTimeSlice
         self.numOfNpc = numOfNpc
+        self.ego_pos = ego_info[' ego_pos']
+        self.junction_point = ego_info['junction_point']
         self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
         self.resultDic = {}
         self.initSimulator()
-        self.initEV(ego_position=ego_position)
+        self.initEV()
         self.isEgoFault = False
         self.isHit = False
         # self.egoFaultDeltaD = 0
 
     def initSimulator(self):
         client = carla.Client('localhost', 2000)
-        client.start_recorder('recording.log')
         world = client.get_world()
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -65,7 +66,7 @@ class LgApSimulation:
         # else:
         #    sim.load(mapName)
 
-    def initEV(self, ego_position=None):
+    def initEV(self):
         sim = self.sim
         world = self.world
         world.tick()
@@ -86,20 +87,8 @@ class LgApSimulation:
         blueprint_library = world.get_blueprint_library()
         vehicle_bp = blueprint_library.find('vehicle.toyota.prius')
         vehicle_bp.set_attribute('role_name', 'hero')
-
-        ego_path=[[] for i in range(2)]
-        
-        if ego_position is None:
-            spawn_points = world.get_map().get_spawn_points()
-            spawn_ego = random.choice(spawn_points)
-            destination_ego = random.choice(spawn_points)
-            while(destination_ego == spawn_ego):
-                destination_ego = random.choice(spawn_points)
-        else:
-            spawn_ego = carla.Transform(carla.Location(x=ego_position[0][0], y=ego_position[0][1], z=ego_position[0][2]), carla.Rotation(pitch=ego_position[0][3], yaw=ego_position[0][4], roll=ego_position[0][5]))
-            destination_ego = carla.Transform(carla.Location(x=ego_position[1][0], y=ego_position[1][1], z=ego_position[1][2]))
-
-        
+        spawn_ego = carla.Transform(carla.Location(x=self.ego_pos[0][0], y=self.ego_pos[0][1], z=self.ego_pos[0][2]), carla.Rotation(pitch=self.ego_pos[0][3], yaw=self.ego_pos[0][4], roll=self.ego_pos[0][5]))
+        destination_ego = carla.Transform(carla.Location(x=self.ego_pos[1][0], y=self.ego_pos[1][1], z=self.ego_pos[1][2]))
         ego = world.spawn_actor(vehicle_bp, spawn_ego)
         ego.set_autopilot(True)
         self.tm.set_path(ego, [destination_ego.location])
@@ -110,16 +99,6 @@ class LgApSimulation:
         self.scenario_pos[0][0].append(spawn_ego.rotation.pitch)
         self.scenario_pos[0][0].append(spawn_ego.rotation.yaw)
         self.scenario_pos[0][0].append(spawn_ego.rotation.roll)
-        ego_path[0].append(spawn_ego.location.x)
-        ego_path[0].append(spawn_ego.location.y)
-        ego_path[0].append(spawn_ego.location.z)
-        ego_path[0].append(spawn_ego.rotation.pitch)
-        ego_path[0].append(spawn_ego.rotation.yaw)
-        ego_path[0].append(spawn_ego.rotation.roll)
-        ego_path[1].append(destination_ego.location.x)
-        ego_path[1].append(destination_ego.location.y)
-        ego_path[1].append(destination_ego.location.z)
-        self.resultDic['ego_pos'] = ego_path
         
         # egoState = lgsvl.AgentState()
         # egoState.transform = sim.map_point_on_lane(self.initEvPos)  # put the ego on the lane
@@ -279,13 +258,14 @@ class LgApSimulation:
 
 
     def runSimulation(self, scenarioObj):
-
-        now = datetime.now()
-        date_time = now.strftime("%m-%d-%Y-%H-%M-%S")
-        util.print_debug("\n === Run simulation === [" + date_time + "]")
         sim = self.sim
         world = self.world
         tm = self.tm
+        now = datetime.now()
+        date_time = now.strftime("%m-%d-%Y-%H-%M-%S")
+        util.print_debug("\n === Run simulation === [" + date_time + "]")
+        record_path = "home/tieriv/alsachai/recording" + date_time + ".log"
+        self.sim.start_recorder(record_path)
         npcList = self.npcList
         ego = self.ego
         # init_degree = ego.state.rotation.y
@@ -401,12 +381,16 @@ class LgApSimulation:
                 break
 
 
+        self.sim.stop_recorder()
         self.resultDic['pos'] = self.scenario_pos
         self.resultDic['fault'] = ''
+        self.resultDic['time'] = date_time
         if self.isEgoFault == True:
-                self.resultDic['fault'] = 'ego'
+            self.resultDic['fault'] = 'ego'
+        else:
+            if os.path.exists(record_path):
+                os.remove(record_path)
         util.print_debug(" === Finish simulation === ")
-        self.sim.stop_recorder()
         
         util.print_debug("{} NPCs are waiting to be destroyed".format(len(npcList)))
         npc_count = 0
@@ -439,7 +423,7 @@ scenarioObj = pickle.load(objF)
 objF.close()
 
 egoF = open(egoPath, 'rb')
-ego_position = pickle.load(egoF)
+ego_info = pickle.load(egoF)
 egoF.close()
 
 resultDic = {}
@@ -451,7 +435,7 @@ resultDic = {}
 #     resultDic['fitness'] = ''
 #     resultDic['fault'] = ''
 
-sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc, ego_position=ego_position)
+sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc, ego_info=ego_info)
 resultDic = sim.runSimulation(scenarioObj)
 
 # Send fitness score int object back to ge

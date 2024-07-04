@@ -124,7 +124,7 @@ class egoSearch:
 resultDic = {}
 sim = egoSearch()
 resultDic = sim.find_best()
-resPath = 'ego.path'
+resPath = 'ego_path.obj'
 if os.path.isfile(resPath) == True:
     os.system("rm " + resPath)
 f_f = open(resPath, 'wb')
