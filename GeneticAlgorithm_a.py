@@ -257,7 +257,7 @@ class GeneticAlgorithm:
                 else:
                     npc_pos_last = None
 
-                if self.isStraight(ego_pos, npc_pos):
+                if self.isStraight(ego_pos, npc_pos, npc_pos_last, ego_time, npc_time):
                     if ego_time > npc_time:
                         prob = random.randint(0, 1)
                         if prob == 0:  # decelerate
