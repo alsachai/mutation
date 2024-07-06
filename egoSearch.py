@@ -95,21 +95,27 @@ class egoSearch:
                 if ego_waypoint.is_junction:
                     if ego_waypoint.get_junction().id not in junction:
                         junction.append(ego_waypoint.get_junction().id)
-                    if ego_position not in junction_point:
-                        junction_point.append(ego_position)
+                    ego_pos = [ego_position.x, ego_position.y, ego_position.z, t]
+                    if ego_pos not in junction_point:
+                        junction_point.append(ego_pos)
             score = len(junction)
             if score > max_score:
                 max_score=score
-                path = [[] for i in range(2)]
-                path[0].append(spawn_ego.location.x)
-                path[0].append(spawn_ego.location.y)
-                path[0].append(spawn_ego.location.z)
-                path[0].append(spawn_ego.rotation.pitch)
-                path[0].append(spawn_ego.rotation.yaw)
-                path[0].append(spawn_ego.rotation.roll)
-                path[1].append(destination_ego.location.x)
-                path[1].append(destination_ego.location.y)
-                path[1].append(destination_ego.location.z)
+                path = [
+                    [
+                        spawn_ego.location.x,
+                        spawn_ego.location.y,
+                        spawn_ego.location.z,
+                        spawn_ego.rotation.pitch,
+                        spawn_ego.rotation.yaw,
+                        spawn_ego.rotation.roll
+                    ],
+                    [
+                        destination_ego.location.x,
+                        destination_ego.location.y,
+                        destination_ego.location.z
+                    ]
+                ]
                 self.ego_path = copy.deepcopy(path)
                 self.junction_point_list = copy.deepcopy(junction_point)
             count += 1
