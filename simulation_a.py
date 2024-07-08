@@ -15,7 +15,7 @@ import carla
      
 class LgApSimulation:
 
-    def __init__(self, numOfTimeSlice, numOfNpc, ego_info=None):
+    def __init__(self, numOfTimeSlice, numOfNpc, ego_info=None, npc_spawn=None):
         ################################################################
         # self.bridgeLogPath = "/home/av-input/Workplace/apollo-lg/apollo-3.5/data/log/cyber_bridge.INFO"
         ################################################################
@@ -29,6 +29,7 @@ class LgApSimulation:
         self.numOfNpc = numOfNpc
         self.ego_pos = ego_info[' ego_pos']
         self.junction_point = ego_info['junction_point']
+        self.npc_spawn_list = npc_spawn['pos']
         self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
         self.resultDic = {}
         self.initSimulator()
@@ -176,6 +177,45 @@ class LgApSimulation:
     
         return False
 
+    def addNpcVehicleJuntion(self, scenario_npc, npc_spawn, first_flag, num):
+        sim = self.sim
+        world = self.world
+        npcList = self.npcList
+        blueprint_library = world.get_blueprint_library()
+        vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
+        if first_flag == True:
+            npc_pos = carla.Transform(carla.Location(x=npc_spawn[0][0], y=npc_spawn[0][1], z=npc_spawn[0][2]), carla.Rotation(pitch=npc_spawn[0][3], yaw=npc_spawn[0][4], roll=npc_spawn[0][5]))
+            npc = world.spawn_actor(vehicle_bp, npc_pos)
+            self.scenario_pos[num+1][0].append(npc_pos.location.x)
+            self.scenario_pos[num+1][0].append(npc_pos.location.y)
+            self.scenario_pos[num+1][0].append(npc_pos.location.z)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.pitch)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.yaw)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.roll)
+        else:
+            npc_pos = carla.Transform(carla.Location(x=scenario_npc[0][2], y=scenario_npc[0][3], z=scenario_npc[0][4]), carla.Rotation(pitch=scenario_npc[0][5], yaw=scenario_npc[0][6], roll=scenario_npc[0][7]))
+            npc = world.spawn_actor(vehicle_bp, npc_pos)
+            self.scenario_pos[num+1][0].append(npc_pos.location.x)
+            self.scenario_pos[num+1][0].append(npc_pos.location.y)
+            self.scenario_pos[num+1][0].append(npc_pos.location.z)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.pitch)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.yaw)
+            self.scenario_pos[num+1][0].append(npc_pos.rotation.roll)
+            
+        npc.set_autopilot(True)
+
+        if first_flag == True:
+            destination = random.choice(world.get_map().get_spawn_points())
+            junction_point = self.junction_point[npc_spawn[0][6]]
+            junction = carla.Location(x=junction_point[0], y=junction_point[1], z=junction_point[2])
+            self.tm.set_path(npc, [junction, destination.location])
+        else:
+            route = []
+            for t in range(1, len(scenario_npc)):
+                route.append(carla.Location(x=scenario_npc[t][2], y=scenario_npc[t][3], z=scenario_npc[t][4]))
+            self.tm.set_path(npc, route)
+        
+
     def addNpcVehicle(self, scenario_npc, npc_spawn, first_flag, num, ego_path):
         sim = self.sim
         world = self.world
@@ -277,10 +317,19 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
-        ego_path = self.resultDic['ego_pos']
+        ego_path = self.ego_pos
         npc_first_spawn = random.sample(world.get_map().get_spawn_points(), self.numOfNpc)
-        for n in range(self.numOfNpc):
-            self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
+        npc_junction = random.sample(self.npc_spawn_list, self.numOfNpc)
+        if first_flag == True:
+            for n in range(self.numOfNpc):
+                p = random.random()
+                if p <= 0.4:
+                    self.addNpcVehicleJuntion(scenarioObj[n], npc_junction[n], first_flag, n)
+                else:
+                    self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
+        else:
+            for n in range(self.numOfNpc):
+                self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
         ################################################################
 
         # for npc in npcList:
@@ -413,8 +462,9 @@ class LgApSimulation:
 objPath = sys.argv[1]
 resPath = sys.argv[2]
 egoPath = sys.argv[3]
-numOfNpc = int(sys.argv[4])
-numOfTimeSlice = int(sys.argv[5])
+npcPath = sys.argv[4]
+numOfNpc = int(sys.argv[5])
+numOfTimeSlice = int(sys.argv[6])
 
 
 
@@ -426,6 +476,10 @@ egoF = open(egoPath, 'rb')
 ego_info = pickle.load(egoF)
 egoF.close()
 
+npcS = open(npcPath, 'rb')
+npc_spawn = pickle.load(npcS)
+npcS.close()
+
 resultDic = {}
 # try:
 #     sim = LgApSimulation()
@@ -435,7 +489,7 @@ resultDic = {}
 #     resultDic['fitness'] = ''
 #     resultDic['fault'] = ''
 
-sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc, ego_info=ego_info)
+sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc, ego_info=ego_info, npc_spawn=npc_spawn)
 resultDic = sim.runSimulation(scenarioObj)
 
 # Send fitness score int object back to ge
