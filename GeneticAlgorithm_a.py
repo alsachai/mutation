@@ -90,7 +90,7 @@ class GeneticAlgorithm:
             # Make sure we clear touched_chs history book every gen
             self.touched_chs = []
             self.mutation()                                   # Mutation
-            self.cross()                                       # Crossover
+            #self.cross()                                       # Crossover
             self.simulate_touched(i)
             self.select_roulette()                             # Selection scenarios for the next generation
 

@@ -41,8 +41,8 @@ class npcSearch:
         return math.sqrt(math.pow(dx , 2) + math.pow(dy, 2) + math.pow(dz, 2))
     
     def get_distance_threshold(self, time_difference):
-        base_threshold = 15.0  
-        min_threshold = 3.0  
+        base_threshold = 45.0 
+        min_threshold = 5.0  
         max_time_difference = 30.0  
         return max(min_threshold, base_threshold - (base_threshold - min_threshold) * (time_difference / max_time_difference))
 

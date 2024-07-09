@@ -27,7 +27,7 @@ class LgApSimulation:
         self.npcList = [] # The list contains all the npc added
         self.numOfTimeSlice = numOfTimeSlice
         self.numOfNpc = numOfNpc
-        self.ego_pos = ego_info[' ego_pos']
+        self.ego_pos = ego_info['ego_pos']
         self.junction_point = ego_info['junction_point']
         self.npc_spawn_list = npc_spawn['pos']
         self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
@@ -184,7 +184,7 @@ class LgApSimulation:
         blueprint_library = world.get_blueprint_library()
         vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
         if first_flag == True:
-            npc_pos = carla.Transform(carla.Location(x=npc_spawn[0][0], y=npc_spawn[0][1], z=npc_spawn[0][2]), carla.Rotation(pitch=npc_spawn[0][3], yaw=npc_spawn[0][4], roll=npc_spawn[0][5]))
+            npc_pos = carla.Transform(carla.Location(x=npc_spawn[0], y=npc_spawn[1], z=npc_spawn[2]), carla.Rotation(pitch=npc_spawn[3], yaw=npc_spawn[4], roll=npc_spawn[5]))
             npc = world.spawn_actor(vehicle_bp, npc_pos)
             self.scenario_pos[num+1][0].append(npc_pos.location.x)
             self.scenario_pos[num+1][0].append(npc_pos.location.y)
@@ -206,7 +206,7 @@ class LgApSimulation:
 
         if first_flag == True:
             destination = random.choice(world.get_map().get_spawn_points())
-            junction_point = self.junction_point[npc_spawn[0][6]]
+            junction_point = self.junction_point[npc_spawn[6]]
             junction = carla.Location(x=junction_point[0], y=junction_point[1], z=junction_point[2])
             self.tm.set_path(npc, [junction, destination.location])
         else:
@@ -214,6 +214,7 @@ class LgApSimulation:
             for t in range(1, len(scenario_npc)):
                 route.append(carla.Location(x=scenario_npc[t][2], y=scenario_npc[t][3], z=scenario_npc[t][4]))
             self.tm.set_path(npc, route)
+        npcList.append(npc)
         
 
     def addNpcVehicle(self, scenario_npc, npc_spawn, first_flag, num, ego_path):
@@ -320,7 +321,7 @@ class LgApSimulation:
         ego_path = self.ego_pos
         npc_first_spawn = random.sample(world.get_map().get_spawn_points(), self.numOfNpc)
         if len(self.npc_spawn_list) < self.numOfNpc:
-            npc_junction = random.shuffle(self.npc_spawn_list)
+            npc_junction = random.sample(self.npc_spawn_list, len(self.npc_spawn_list))
         else:
             npc_junction = random.sample(self.npc_spawn_list, self.numOfNpc)
         if first_flag == True:
