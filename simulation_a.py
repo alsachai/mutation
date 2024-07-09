@@ -319,12 +319,20 @@ class LgApSimulation:
         ################################################################
         ego_path = self.ego_pos
         npc_first_spawn = random.sample(world.get_map().get_spawn_points(), self.numOfNpc)
-        npc_junction = random.sample(self.npc_spawn_list, self.numOfNpc)
+        if len(self.npc_spawn_list) < self.numOfNpc:
+            npc_junction = random.shuffle(self.npc_spawn_list)
+        else:
+            npc_junction = random.sample(self.npc_spawn_list, self.numOfNpc)
         if first_flag == True:
+            used = 0
             for n in range(self.numOfNpc):
                 p = random.random()
                 if p <= 0.4:
-                    self.addNpcVehicleJuntion(scenarioObj[n], npc_junction[n], first_flag, n)
+                    if used < len(npc_junction):
+                        self.addNpcVehicleJuntion(scenarioObj[n], npc_junction[used], first_flag, n)
+                        used += 1
+                    else:
+                        self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
                 else:
                     self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
         else:
