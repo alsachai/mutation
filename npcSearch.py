@@ -21,7 +21,6 @@ class npcSearch:
         self.junction_point_list = ego_info['junction_point']
         self.resultDic = {}
         self.initSimulator()
-        self.initEV()
         self.ego_path=[[] for i in range(2)]
 
 
@@ -35,13 +34,13 @@ class npcSearch:
     def generate_waypoints(self, pos):
         return self.map.get_waypoint(carla.Location(x=pos[0], y=pos[1], z=pos[2])), pos[3]
 
-    def calculate_distance(loc1, loc2):
+    def calculate_distance(self, loc1, loc2):
         dx = loc1.x - loc2.x
         dy = loc1.y - loc2.y
         dz = loc1.z - loc2.z
         return math.sqrt(math.pow(dx , 2) + math.pow(dy, 2) + math.pow(dz, 2))
     
-    def get_distance_threshold(time_difference):
+    def get_distance_threshold(self, time_difference):
         base_threshold = 15.0  
         min_threshold = 3.0  
         max_time_difference = 30.0  
@@ -53,7 +52,7 @@ class npcSearch:
         for spawn_point in spawn_points:
             for i in range(len(self.junction_point_list)):
                 waypos, time = self.generate_waypoints(self.junction_point_list[i])
-                distance = self.calculate_distance(spawn_point.location, waypos)
+                distance = self.calculate_distance(spawn_point.location, waypos.transform.location)
                 time_difference = abs(time - distance / 5)
                 threshold = self.get_distance_threshold(time_difference)
                 if distance < threshold:

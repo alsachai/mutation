@@ -121,6 +121,7 @@ class egoSearch:
             count += 1
         self.resultDic['ego_pos'] = self.ego_path
         self.resultDic['junction_point'] = self.junction_point_list
+        self.resultDic['score'] = max_score
                     
         return self.resultDic
 
