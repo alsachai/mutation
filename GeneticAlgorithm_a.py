@@ -251,9 +251,9 @@ class GeneticAlgorithm:
                 npc_index = eachChs.period_conflicts[index]['npc']
                 npc_time = eachChs.period_conflicts[index]['npc_time']
                 ego_pos = eachChs.scenario_pos[0][npc_time]            # check the position of ego when npc arrives the conflict point
-                npc_pos = eachChs.scenario_pos[npc_index][npc_time]
+                npc_pos = eachChs.scenario_pos[npc_index + 1][npc_time]
                 if npc_time - 1 >= 0:
-                    npc_pos_last = eachChs.scenario_pos[npc_index][npc_time - 1]
+                    npc_pos_last = eachChs.scenario_pos[npc_index + 1][npc_time - 1]
                 else:
                     npc_pos_last = None
 
@@ -456,7 +456,6 @@ class GeneticAlgorithm:
                 selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                 selectedChromosome.scenario = self.pop[0].scenario
                 selectedChromosome.y = self.pop[0].y
-                selectedChromosome.ego_path = self.pop[j].ego_path
                 selectedChromosome.is_accident = False
                 selectedChromosome.scenario_pos = self.pop[j].scenario_pos
                 selectedChromosome.period_conflicts = self.pop[j].period_conflicts
@@ -466,7 +465,6 @@ class GeneticAlgorithm:
                     selectedChromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
                     selectedChromosome.scenario = self.pop[j].scenario
                     selectedChromosome.y = self.pop[j].y
-                    selectedChromosome.ego_path = self.pop[j].ego_path
                     selectedChromosome.is_accident = False
                     selectedChromosome.scenario_pos = self.pop[j].scenario_pos
                     selectedChromosome.period_conflicts = self.pop[j].period_conflicts
