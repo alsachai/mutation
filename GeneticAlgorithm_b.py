@@ -371,7 +371,7 @@ class GeneticAlgorithm:
                         
                     
             for actor in range(0, eachChs.code_x1_length):
-                if actor not in eachChs.saved_npcs:
+                if actor not in eachChs.saved_c_npcs and actor not in eachChs.saved_p_npcs:
                     if self.pm >= random.random():
                         changed = True
                         time_index = random.randint(0, eachChs.code_x2_length-1)
@@ -486,10 +486,11 @@ class GeneticAlgorithm:
                 selectedChromosome.scenario = self.pop[0].scenario
                 selectedChromosome.y = self.pop[0].y
                 selectedChromosome.is_accident = False
-                selectedChromosome.scenario_pos = self.pop[j].scenario_pos
-                selectedChromosome.period_conflicts = self.pop[j].period_conflicts
-                selectedChromosome.potential_conflicts = self.pop[j].potential_conflicts
-                selectedChromosome.saved_npcs = self.pop[j].saved_npcs
+                selectedChromosome.scenario_pos = self.pop[0].scenario_pos
+                selectedChromosome.period_conflicts = self.pop[0].period_conflicts
+                selectedChromosome.saved_c_npcs = self.pop[0].saved_c_npcs
+                selectedChromosome.potential_conflicts = self.pop[0].potential_conflicts
+                selectedChromosome.saved_p_npcs = self.pop[0].saved_p_npcs
                 v.append(selectedChromosome)
             for j in range(1, self.pop_size):
                 if q[j - 1] < r <= q[j]:
@@ -499,8 +500,9 @@ class GeneticAlgorithm:
                     selectedChromosome.is_accident = False
                     selectedChromosome.scenario_pos = self.pop[j].scenario_pos
                     selectedChromosome.period_conflicts = self.pop[j].period_conflicts
+                    selectedChromosome.saved_c_npcs = self.pop[j].saved_c_npcs
                     selectedChromosome.potential_conflicts = self.pop[j].potential_conflicts
-                    selectedChromosome.saved_npcs = self.pop[j].saved_npcs
+                    selectedChromosome.saved_p_npcs = self.pop[j].saved_p_npcs
                     v.append(selectedChromosome)
         self.pop = copy.deepcopy(v)
         ############################################################

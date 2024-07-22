@@ -15,8 +15,9 @@ class Chromosome:
         self.scenario = [[[] for i in range(time_size)] for j in range(NPC_size)] # start with npc, scenario_pos starts with ego
         self.scenario_pos = None
         self.period_conflicts = None
+        self.saved_c_npcs = None
         self.potential_conflicts = None
-        self.saved_npcs = None
+        self.saved_p_npcs = None
         self.bounds = bounds
         self.code_x1_length = NPC_size 
         self.code_x2_length = time_size
@@ -118,8 +119,8 @@ class Chromosome:
                     self.scenario_pos[i][j].append(get_pos[i][j][0])
                     self.scenario_pos[i][j].append(get_pos[i][j][1])
                     self.scenario_pos[i][j].append(get_pos[i][j][2])
-            self.period_conflicts = self.findConflicts()
-            self.potential_conflicts, self.saved_npcs = self.find_potential()
+            self.period_conflicts, self.saved_c_npcs = self.findConflicts()
+            self.potential_conflicts, self.saved_p_npcs = self.find_potential()
             self.y = sum(conflict['score'] for conflict in self.period_conflicts if conflict is not None)
     
 
@@ -128,6 +129,7 @@ class Chromosome:
         num_periods = (self.code_x2_length + self.period - 1) // self.period
 
         period_conflicts = []
+        saved_npcs = []
 
         for period_idx in range(num_periods):
             start_time = period_idx * self.period
@@ -153,6 +155,8 @@ class Chromosome:
                                 "score": self.conflict_t - dt
                             })
                             conflict_found = True
+                            if min_distance_idx not in saved_npcs:
+                                saved_npcs.append(min_distance_idx)
                             break
                     # Check future positions
                     if t + dt < end_time: 
@@ -170,6 +174,8 @@ class Chromosome:
                                 "score": self.conflict_t - dt
                             })
                             conflict_found = True
+                            if min_distance_idx not in saved_npcs:
+                                saved_npcs.append(min_distance_idx)
                             break
 
                 if conflict_found:
@@ -177,7 +183,7 @@ class Chromosome:
         if len(period_conflicts) == 0: 
             print("No conflict!!")
 
-        return period_conflicts
+        return period_conflicts, saved_npcs
 
 
     def find_potential(self):
