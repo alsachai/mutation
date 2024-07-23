@@ -85,7 +85,7 @@ class Chromosome:
     # Get fitness score of the scenario
     def func(self, gen=None, lisFlag=False):
         resultObj = self.decoding()
-        if resultObj['fault'] == 'ego':
+        if resultObj['fault'] is not None:
                 # An accident        
                 util.print_debug(" ***** Found an accident where ego is at fault ***** ")
                 self.is_accident = True

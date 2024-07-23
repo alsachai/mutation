@@ -443,9 +443,15 @@ class LgApSimulation:
         self.resultDic['pos'] = self.scenario_pos
         self.resultDic['fault'] = ''
         self.resultDic['time'] = date_time
-        if self.isEgoFault == True:
-            self.resultDic['fault'] = 'ego'
+        if self.isHit == True:
+            if self.isEgoFault == True:
+                self.resultDic['fault'] = 'ego'
+            else:
+                self.resultDic['fault'] = 'npc'
+                if os.path.exists(record_path):
+                    os.remove(record_path)
         else:
+            self.resultDic['fault'] = None
             if os.path.exists(record_path):
                 os.remove(record_path)
         util.print_debug(" === Finish simulation === ")
