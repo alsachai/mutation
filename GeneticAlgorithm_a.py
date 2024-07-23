@@ -38,6 +38,7 @@ class GeneticAlgorithm:
         self.hasRestarted = False
         self.lastRestartGen = 0
         self.bestYAfterRestart = 0
+        self.count_dict = {i: 0 for i in range(101)}
         
         client = carla.Client('localhost', 2000)
         world = client.get_world()
@@ -173,6 +174,7 @@ class GeneticAlgorithm:
                     util.print_debug(" \n\n === End of Local Iterative Search === \n\n")
                     ################## End LIS ################    
 
+        print(self.count_dict)
         return self.g_best
 
     def init_pop(self):
@@ -366,6 +368,7 @@ class GeneticAlgorithm:
             i += 1
             if eachChs in self.touched_chs:
                 eachChs.func(gen, self.isInLis)
+                self.count_dict[eachChs.y] += 1
             else:
                 util.print_debug(" --- The chromosome has not been touched in this generation, skip simulation. ---")
             util.print_debug(" --- In mutation: Current scenario has y = " + str(eachChs.y))
