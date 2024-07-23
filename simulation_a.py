@@ -305,7 +305,7 @@ class LgApSimulation:
         now = datetime.now()
         date_time = now.strftime("%m-%d-%Y-%H-%M-%S")
         util.print_debug("\n === Run simulation === [" + date_time + "]")
-        record_path = "home/tieriv/alsachai/recording" + date_time + ".log"
+        record_path = "home/tieriv/alsachai/mutation/recording" + date_time + ".log"
         self.sim.start_recorder(record_path)
         npcList = self.npcList
         ego = self.ego

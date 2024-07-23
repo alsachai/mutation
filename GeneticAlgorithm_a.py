@@ -39,6 +39,7 @@ class GeneticAlgorithm:
         self.lastRestartGen = 0
         self.bestYAfterRestart = 0
         self.count_dict = {i: 0 for i in range(101)}
+        self.count_dict[0.001] = 0
         
         client = carla.Client('localhost', 2000)
         world = client.get_world()
@@ -497,6 +498,6 @@ class GeneticAlgorithm:
 
 if __name__ == '__main__':
     bounds = [[0, 15], [0, 3], [0, 2], [0, 1], [2, 3]]
-    algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 20, 30, 2, 2, 3, 100)
+    algorithm = GeneticAlgorithm(bounds,0.4, 0.8, 4, 20, 30, 3, 3, 3, 100)
     algorithm.ga()
     pass
