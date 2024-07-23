@@ -49,13 +49,15 @@ class npcSearch:
     def generate_npc_spawn(self):
         spawn_points = self.map.get_spawn_points()
         found_spawn_points = []
+        used_points = []
         for spawn_point in spawn_points:
             for i in range(len(self.junction_point_list)):
                 waypos, time = self.generate_waypoints(self.junction_point_list[i])
                 distance = self.calculate_distance(spawn_point.location, waypos.transform.location)
                 time_difference = abs(time - distance / 5)
                 threshold = self.get_distance_threshold(time_difference)
-                if distance < threshold:
+                if distance < threshold and spawn_point not in used_points:
+                    used_points.append(spawn_point)
                     found_spawn_points.append([spawn_point.location.x, spawn_point.location.y, spawn_point.location.z, spawn_point.rotation.pitch, spawn_point.rotation.yaw, spawn_point.rotation.roll, i])
                     break
         self.resultDic['pos'] = found_spawn_points
