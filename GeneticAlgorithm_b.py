@@ -68,7 +68,7 @@ class GeneticAlgorithm:
         # Add some entropy
         tempPm = self.pm
         self.pm = 1
-        self.mutation()
+        self.mutation_fuzz()
         self.pm = tempPm
         self.g_best, bestIndex = self.find_best()
 

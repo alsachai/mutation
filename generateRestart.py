@@ -46,9 +46,9 @@ def generateRestart(ck_path, scenarioNum, bounds, conflict_d, conflict_t, period
 	# Go through every scenario
 
 	for i in range(scenarioNum):
-		similarity = 0;
+		similarity = 0
 		for j in range(popPoolSize):
-			simiPop = 0;
+			simiPop = 0
 			for k in range(scenarioSize):
 				scenario1 = newPopCandiate[i].scenario
 				scenario2 = prevPopPool[j][k].scenario

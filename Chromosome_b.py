@@ -42,6 +42,13 @@ class Chromosome:
                 a = random.randrange(self.bounds[1][0], self.bounds[1][1])      # Init action
                 self.scenario[i][j].append(v)
                 self.scenario[i][j].append(a)
+                self.scenario[i][j].append(0) # x
+                self.scenario[i][j].append(0) # y
+                self.scenario[i][j].append(0) # z
+                if j == 0:
+                    self.scenario[i][j].append(0) # roll
+                    self.scenario[i][j].append(0) # pitch
+                    self.scenario[i][j].append(0) # yaw
 
     def foo_obj_func(self):
         speedSum = 0
@@ -105,13 +112,13 @@ class Chromosome:
             get_pos = resultObj['pos']
             for i in range(self.code_x1_length):        # For every NPC
                 for j in range(self.code_x2_length):    # For every time slice
-                    self.scenario[i][j].append(get_pos[i+1][j][0])
-                    self.scenario[i][j].append(get_pos[i+1][j][1])
-                    self.scenario[i][j].append(get_pos[i+1][j][2])
+                    self.scenario[i][j][2] = get_pos[i+1][j][0]
+                    self.scenario[i][j][3] = get_pos[i+1][j][1]
+                    self.scenario[i][j][4] = get_pos[i+1][j][2]
                     if j == 0:
-                        self.scenario[i][0].append(get_pos[i+1][0][3])
-                        self.scenario[i][0].append(get_pos[i+1][0][4])
-                        self.scenario[i][0].append(get_pos[i+1][0][5])
+                        self.scenario[i][0][5] = get_pos[i+1][0][3]
+                        self.scenario[i][0][6] = get_pos[i+1][0][4]
+                        self.scenario[i][0][7] = get_pos[i+1][0][5]
                         
             self.scenario_pos = [[[] for i in range(self.code_x2_length)] for j in range(self.code_x1_length+1)]
             for i in range(self.code_x1_length + 1):        # For every NPC
