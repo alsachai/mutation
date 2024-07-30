@@ -30,6 +30,7 @@ class LgApSimulation:
         self.ego_pos = ego_info['ego_pos']
         self.junction_point = ego_info['junction_point']
         self.npc_spawn_list = npc_spawn['pos']
+        self.other_npc = npc_spawn['other']
         self.scenario_pos = [[[] for i in range(numOfTimeSlice)] for j in range(numOfNpc + 1)] 
         self.resultDic = {}
         self.initSimulator()
@@ -226,7 +227,7 @@ class LgApSimulation:
         # random
         spawn_points = world.get_map().get_spawn_points()
         if first_flag == True:
-            npc_pos = npc_spawn
+            npc_pos = carla.Transform(carla.Location(x=npc_spawn[0], y=npc_spawn[1], z=npc_spawn[2]), carla.Rotation(pitch=npc_spawn[3], yaw=npc_spawn[4], roll=npc_spawn[5]))
             npc = world.spawn_actor(vehicle_bp, npc_pos)
             self.scenario_pos[num+1][0].append(npc_pos.location.x)
             self.scenario_pos[num+1][0].append(npc_pos.location.y)
@@ -319,7 +320,7 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
         ego_path = self.ego_pos
-        npc_first_spawn = random.sample(world.get_map().get_spawn_points(), self.numOfNpc)
+        npc_first_spawn = random.sample(self.other_npc, self.numOfNpc)
         if len(self.npc_spawn_list) < self.numOfNpc:
             npc_junction = random.sample(self.npc_spawn_list, len(self.npc_spawn_list))
         else:

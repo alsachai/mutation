@@ -61,6 +61,11 @@ class npcSearch:
                     found_spawn_points.append([spawn_point.location.x, spawn_point.location.y, spawn_point.location.z, spawn_point.rotation.pitch, spawn_point.rotation.yaw, spawn_point.rotation.roll, i])
                     break
         self.resultDic['pos'] = found_spawn_points
+        other_points = []
+        for spawn_point in spawn_points:
+            if spawn_point not in used_points:
+                other_points.append([spawn_point.location.x, spawn_point.location.y, spawn_point.location.z, spawn_point.rotation.pitch, spawn_point.rotation.yaw, spawn_point.rotation.roll])
+        self.resultDic['other'] = other_points
         return self.resultDic
 
 
