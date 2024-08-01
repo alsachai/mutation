@@ -4,7 +4,6 @@ import sys
 import copy
 import random
 import numpy as np
-import yaml
 import pickle
 from Chromosome_b import Chromosome
 from datetime import datetime
@@ -207,14 +206,15 @@ class GeneticAlgorithm:
                 pop_i = self.pop[i]
                 pop_j = self.pop[j]
 
+
+                # select cross index
+                swap_index = random.randint(0, pop_i.code_x1_length - 1)
+                if pop_i.scenario_pos[swap_index][0] == pop_j.scenario[swap_index][0] and pop_i.scenario[swap_index][1] == pop_j.scenario[swap_index][1] and pop_i.scenario[swap_index][2] == pop_j.scenario[swap_index][2]:
+                    continue
+                
                 # Record which chromosomes have been touched
                 self.touched_chs.append(self.pop[i])
                 self.touched_chs.append(self.pop[j])
-
-                # Every time we only switch one NPC between scenarios
-                # select cross index
-                swap_index = random.randint(0, pop_i.code_x1_length - 1)
-
                 temp = copy.deepcopy(pop_j.scenario[swap_index])
                 pop_j.scenario[swap_index] = copy.deepcopy(pop_i.scenario[swap_index])
                 pop_i.scenario[swap_index] = temp

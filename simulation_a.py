@@ -6,7 +6,6 @@ import time
 import math
 import random
 import pickle
-from sympy import Point3D, Line3D, Segment3D, Point2D, Line2D, Segment2D
 from datetime import datetime
 import util
 import copy
@@ -15,7 +14,7 @@ import carla
      
 class LgApSimulation:
 
-    def __init__(self, numOfTimeSlice, numOfNpc, ego_info=None, npc_spawn=None):
+    def __init__(self, numOfTimeSlice, numOfNpc, ego_info=None, npc_spawn=None, is_init=None):
         ################################################################
         # self.bridgeLogPath = "/home/av-input/Workplace/apollo-lg/apollo-3.5/data/log/cyber_bridge.INFO"
         ################################################################
@@ -27,6 +26,7 @@ class LgApSimulation:
         self.npcList = [] # The list contains all the npc added
         self.numOfTimeSlice = numOfTimeSlice
         self.numOfNpc = numOfNpc
+        self.is_init = is_init
         self.ego_pos = ego_info['ego_pos']
         self.junction_point = ego_info['junction_point']
         self.npc_spawn_list = npc_spawn['pos']
@@ -311,10 +311,6 @@ class LgApSimulation:
         npcList = self.npcList
         ego = self.ego
         # init_degree = ego.state.rotation.y
-        if len(scenarioObj[0][0]) == 2:
-            first_flag = True
-        else:
-            first_flag = False
 
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
@@ -325,21 +321,21 @@ class LgApSimulation:
             npc_junction = random.sample(self.npc_spawn_list, len(self.npc_spawn_list))
         else:
             npc_junction = random.sample(self.npc_spawn_list, self.numOfNpc)
-        if first_flag == True:
+        if self.is_init:
             used = 0
             for n in range(self.numOfNpc):
                 p = random.random()
                 if p <= 0.4:
                     if used < len(npc_junction):
-                        self.addNpcVehicleJuntion(scenarioObj[n], npc_junction[used], first_flag, n)
+                        self.addNpcVehicleJuntion(scenarioObj[n], npc_junction[used], self.is_init, n)
                         used += 1
                     else:
-                        self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
+                        self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], self.is_init, n, ego_path)
                 else:
-                    self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
+                    self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], self.is_init, n, ego_path)
         else:
             for n in range(self.numOfNpc):
-                self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], first_flag, n, ego_path)
+                self.addNpcVehicle(scenarioObj[n], npc_first_spawn[n], self.is_init, n, ego_path)
         ################################################################
 
         # for npc in npcList:
@@ -481,8 +477,11 @@ egoPath = sys.argv[3]
 npcPath = sys.argv[4]
 numOfNpc = int(sys.argv[5])
 numOfTimeSlice = int(sys.argv[6])
-
-
+is_init = sys.argv[7]
+if is_init == 'True':
+    is_init = True
+else:
+    is_init = False
 
 objF = open(objPath, 'rb')
 scenarioObj = pickle.load(objF)
@@ -505,7 +504,7 @@ resultDic = {}
 #     resultDic['fitness'] = ''
 #     resultDic['fault'] = ''
 
-sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc, ego_info=ego_info, npc_spawn=npc_spawn)
+sim = LgApSimulation(numOfTimeSlice=numOfTimeSlice, numOfNpc=numOfNpc, ego_info=ego_info, npc_spawn=npc_spawn, is_init=is_init)
 resultDic = sim.runSimulation(scenarioObj)
 
 # Send fitness score int object back to ge

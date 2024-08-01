@@ -21,6 +21,7 @@ class Chromosome:
         self.conflict_t = conflict_t
         self.conflict_d = conflict_d
         self.period = period
+        self.is_init = True
         self.timeoutTime = 300 # in seconds, timeout timer for simulator execution per each scenario simulation
         self.is_accident = False
 
@@ -33,6 +34,7 @@ class Chromosome:
                 self.scenario[i][j].append(a)
 
     def rand_init(self):
+        self.is_init = True
         for i in range(self.code_x1_length):        # For every NPC
             for j in range(self.code_x2_length):    # For every time slice
                 v = random.uniform(self.bounds[0][0], self.bounds[0][1])        # Init velocity
@@ -69,7 +71,7 @@ class Chromosome:
             if os.path.isfile('result.obj') == True:
                 os.remove("result.obj")
 
-            os.system("python3 simulation_a.py scenario.obj result.obj ego_path.obj npc_spawn.obj {} {}".format(self.code_x1_length, self.code_x2_length))
+            os.system("python3 simulation_a.py scenario.obj result.obj ego_path.obj npc_spawn.obj {} {} {}".format(self.code_x1_length, self.code_x2_length, self.is_init))
             resultObj = None
 
             # Read fitness score
@@ -88,6 +90,7 @@ class Chromosome:
 
     # Get fitness score of the scenario
     def func(self, gen=None, lisFlag=False):
+        self.is_init = False
         resultObj = self.decoding()
         if resultObj['fault'] is not None:
                 # An accident        
