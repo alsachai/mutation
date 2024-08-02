@@ -5,7 +5,7 @@ import copy
 import random
 import numpy as np
 import pickle
-from Chromosome import Chromosome
+from Chromosome_b import Chromosome
 from datetime import datetime
 import util
 import tools
@@ -173,7 +173,12 @@ class GeneticAlgorithm:
                     util.print_debug(" \n\n === End of Local Iterative Search === \n\n")
                     ################## End LIS ################    
 
-        print(self.count_dict)
+        if self.isInLis == False:
+            s_f = open('count_dict.obj', 'wb')
+            pickle.dump(self.count_dict, s_f)  # Pickle the scenario object
+            s_f.truncate()
+            s_f.close()  
+            print(self.count_dict)
         return self.g_best
 
     def init_pop(self):

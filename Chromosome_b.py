@@ -147,7 +147,7 @@ class Chromosome:
         
             for t in range(start_time, end_time):
                 ego_pos = self.scenario_pos[0][t]
-                conflict_found = False
+                # conflict_found = False
                 for dt in range(0, self.conflict_t + 1):
                     # Check past positions
                     if t - dt >= start_time: 
@@ -167,7 +167,7 @@ class Chromosome:
                             conflict_found = True
                             if min_distance_idx not in saved_npcs:
                                 saved_npcs.append(min_distance_idx)
-                            break
+                            # break
                     # Check future positions
                     if t + dt < end_time: 
                         future_pos_index = t + dt - start_time
@@ -183,13 +183,13 @@ class Chromosome:
                                 "distance": distances[min_distance_idx],
                                 "score": self.conflict_t - dt
                             })
-                            conflict_found = True
+                            # conflict_found = True
                             if min_distance_idx not in saved_npcs:
                                 saved_npcs.append(min_distance_idx)
-                            break
+                            # break
 
-                if conflict_found:
-                    break
+                # if conflict_found:
+                #     break
         if len(period_conflicts) == 0: 
             print("No conflict!!")
 

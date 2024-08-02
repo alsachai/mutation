@@ -174,8 +174,13 @@ class GeneticAlgorithm:
                     else:
                         util.print_debug(" --- LIS does not find any better scenarios")
                     util.print_debug(" \n\n === End of Local Iterative Search === \n\n")
-                    ################## End LIS ################    
-        print(self.count_dict)
+                    ################## End LIS ################ 
+        if self.isInLis == False:
+            s_f = open('count_dict.obj', 'wb')
+            pickle.dump(self.count_dict, s_f)  # Pickle the scenario object
+            s_f.truncate()
+            s_f.close()  
+            print(self.count_dict)
         return self.g_best
 
     def init_pop(self):
