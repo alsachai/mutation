@@ -317,7 +317,7 @@ class LgApSimulation:
         ################################################################
         ego_path = self.ego_pos
         
-        if len(self.npc_spawn_list) < self.numOfNpc:
+        if len(self.other_npc) < self.numOfNpc:
             npc_first_spawn = random.sample(self.other_npc, len(self.other_npc))
         else:
             npc_first_spawn = random.sample(self.other_npc, self.numOfNpc)
