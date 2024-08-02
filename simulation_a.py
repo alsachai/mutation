@@ -316,7 +316,11 @@ class LgApSimulation:
         # Add NPCs: Hard code for now, the number of npc need to be consistent.
         ################################################################
         ego_path = self.ego_pos
-        npc_first_spawn = random.sample(self.other_npc, self.numOfNpc)
+        
+        if len(self.npc_spawn_list) < self.numOfNpc:
+            npc_first_spawn = random.sample(self.other_npc, len(self.other_npc))
+        else:
+            npc_first_spawn = random.sample(self.other_npc, self.numOfNpc)
         if len(self.npc_spawn_list) < self.numOfNpc:
             npc_junction = random.sample(self.npc_spawn_list, len(self.npc_spawn_list))
         else:
@@ -325,7 +329,7 @@ class LgApSimulation:
             used = 0
             for n in range(self.numOfNpc):
                 p = random.random()
-                if p <= 0.4:
+                if p <= 0.5:
                     if used < len(npc_junction):
                         self.addNpcVehicleJuntion(scenarioObj[n], npc_junction[used], self.is_init, n)
                         used += 1

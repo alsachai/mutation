@@ -6,7 +6,6 @@ import time
 import math
 import random
 import pickle
-from sympy import Point3D, Line3D, Segment3D, Point2D, Line2D, Segment2D
 from datetime import datetime
 import util
 import copy
