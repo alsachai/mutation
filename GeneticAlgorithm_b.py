@@ -37,8 +37,7 @@ class GeneticAlgorithm:
         self.hasRestarted = False
         self.lastRestartGen = 0
         self.bestYAfterRestart = 0
-        self.count_dict = {i: 0 for i in range(101)}
-        self.count_dict[0.001] = 0
+        self.count_dict = []
         
         client = carla.Client('localhost', 2000)
         world = client.get_world()
@@ -397,7 +396,8 @@ class GeneticAlgorithm:
             i += 1
             if eachChs in self.touched_chs:
                 eachChs.func(gen, self.isInLis)
-                self.count_dict[eachChs.y] += 1
+                if self.isInLis == False:
+                    self.count_dict.append([len(eachChs.potential_conflicts), len(eachChs.period_conflicts)])
             else:
                 util.print_debug(" --- The chromosome has not been touched in this generation, skip simulation. ---")
             util.print_debug(" --- In mutation: Current scenario has y = " + str(eachChs.y))

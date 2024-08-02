@@ -21,6 +21,7 @@ class npcSearch:
         self.resultDic = {}
         self.initSimulator()
         self.ego_path=[[] for i in range(2)]
+        self.ego_pos = ego_info['ego_pos']
 
 
     def initSimulator(self):
@@ -62,7 +63,7 @@ class npcSearch:
         self.resultDic['pos'] = found_spawn_points
         other_points = []
         for spawn_point in spawn_points:
-            if spawn_point not in used_points:
+            if spawn_point not in used_points and spawn_point.location.x != self.ego_pos[0][0] and spawn_point.location.y != self.ego_pos[0][1] and spawn_point.location.z != self.ego_pos[0][2]:
                 other_points.append([spawn_point.location.x, spawn_point.location.y, spawn_point.location.z, spawn_point.rotation.pitch, spawn_point.rotation.yaw, spawn_point.rotation.roll])
         self.resultDic['other'] = other_points
         return self.resultDic
