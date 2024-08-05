@@ -191,7 +191,9 @@ class Chromosome:
                 # if conflict_found:
                 #     break
         if len(period_conflicts) == 0: 
-            print("No conflict!!")
+            print("No critical conflict!!")
+        else:
+            print(len(period_conflicts), " critical conflicts found!!")
 
         return period_conflicts, saved_npcs
 
@@ -202,7 +204,7 @@ class Chromosome:
         
         for t in range(self.code_x2_length):
             ego_pos = self.scenario_pos[0][t]
-            for dt in range(self.conflict_t+1, self.conflict_t+4):
+            for dt in range(self.conflict_t+1, self.conflict_t+7):
                 if t - dt >= 0:
                     past_positions = [self.scenario_pos[m][t - dt] for m in range(1, self.code_x1_length + 1)]
                     distances = np.linalg.norm(np.array(past_positions) - np.array(ego_pos), axis=1)
@@ -228,6 +230,10 @@ class Chromosome:
                                 "npc": min_distance_idx,
                             })
                             saved_npcs.append(min_distance_idx)
+        if len(potential_conflicts) == 0:
+            print("No noncritical conflicts!!")
+        else:
+            print(len(potential_conflicts), " noncritical conflicts found!!")
             
         return potential_conflicts, saved_npcs
                 
