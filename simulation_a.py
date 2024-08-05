@@ -208,8 +208,8 @@ class LgApSimulation:
         if first_flag == True:
             destination = random.choice(world.get_map().get_spawn_points())
             junction_point = self.junction_point[npc_spawn[6]]
-            junction = carla.Location(x=junction_point[0], y=junction_point[1], z=junction_point[2])
-            self.tm.set_path(npc, [junction, destination.location])
+            # junction = carla.Location(x=junction_point[0], y=junction_point[1], z=junction_point[2])
+            self.tm.set_path(npc, [destination.location])
         else:
             route = []
             for t in range(1, len(scenario_npc)):

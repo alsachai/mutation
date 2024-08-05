@@ -5,7 +5,7 @@ import copy
 import tools
 import collections
 import pickle
-from Chromosome import Chromosome
+from Chromosome_b import Chromosome
 from os import listdir
 from os.path import isfile, join
 from os import walk   
