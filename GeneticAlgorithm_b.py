@@ -190,7 +190,7 @@ class GeneticAlgorithm:
             chromosome = Chromosome(self.bounds, self.NPC_size, self.time_size, self.conflict_t, self.conflict_d, self.period)
             chromosome.rand_init()
             chromosome.func()
-            if chromosome.is_accident == False:
+            if chromosome.is_accident == False and len(chromosome.period_conflicts) != 0:
                 print(" --- The scenario is not an accident, add to the population. ---")
                 self.pop.append(chromosome)
                 i += 1
